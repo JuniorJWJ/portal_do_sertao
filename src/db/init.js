@@ -9,7 +9,7 @@ const initDb = {
             nome VARCHAR,
             profissao VARCHAR,
             email VARCHAR,
-            endereco_foto VARCHAR
+            endereco_foto VARCHAR,
             biografia TEXT
         )`);
 
