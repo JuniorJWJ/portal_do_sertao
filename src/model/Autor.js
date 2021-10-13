@@ -7,27 +7,32 @@ module.exports = {
 
         await db.close()
 
-        return data.map( autor =>({ 
-            id: autor.id,
-            nome: autor.nome,
-            profissao: autor.profissao,
-            biografia: autor.biografia
-        }))
+        return data.map( autor => autor);
     },
     async create(newAutor){
-        const db = await Database()
+        console.log(newAutor)
+        try {
+            const db = await Database()
 
-        await db.run(`INSERT INTO autor (
-            nome,
-            profissao,
-            biografia
-        ) VALUES (
-            "${newAutor.nome}",
-            "${newAutor.profissao}",
-            "${newAutor.biografia}"
-        )`)
+            await db.run(`INSERT INTO autor (
+                nome,
+                profissao,
+                biografia,
+                email,
+                endereco_foto
+            ) VALUES (
+                "${newAutor.nome}",
+                "${newAutor.profissao}",
+                "${newAutor.biografia}",
+                "${newAutor.email || ''}",
+                "${newAutor.endereco_foto || ''}"
+            )`)
 
-        await db.close()
+            await db.close()
+        } catch (error) {
+            console.log(error);
+        }
+        
 
     },
     async delete(id){
