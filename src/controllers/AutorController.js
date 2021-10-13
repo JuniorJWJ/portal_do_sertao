@@ -7,6 +7,7 @@ module.exports = {
       return res.render("index", {autor: autor})
     },
     async create(req, res) {
+      console.log(4)
       await Autor.create({
         nome: req.body.nome,
         profissao: req.body.profissao,

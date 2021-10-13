@@ -1,6 +1,24 @@
 <h1>form upload</h1>
 
-<form method="post" action="/posts" enctype="multipart/form-data">
+<!-- <form method="post" action="/posts" enctype="multipart/form-data">
     <input type="file" name="file">
     <input type="submit" value="upload"> 
+</form> -->
+
+<form action="/create_autor" method="post" enctype="multipart/form-data">
+    <fieldset class="grupo">
+        <div class="campo">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" style="width: 20em" value="" />
+        </div>
+        <div class="campo">
+            <label for="profissao">Profissão:</label>
+            <input type="text" id="profissao" name="profissao" style="width: 20em" value="" />
+        </div>
+        <div class="campo">
+            <label for="biografia">Biografia:</label>
+            <textarea id="biografia" name="biografia" rows="4" cols="50"></textarea>
+        </div>
+    </fieldset>	
+    <button class="botao submit" type="submit" name="submit">Cadastrar</button>
 </form>
