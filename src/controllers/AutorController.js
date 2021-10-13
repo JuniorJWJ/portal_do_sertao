@@ -11,7 +11,9 @@ module.exports = {
       await Autor.create({
         nome: req.body.nome,
         profissao: req.body.profissao,
-        biografia: req.body.biografia
+        biografia: req.body.biografia,
+        email: req.body.email,
+        endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : '' 
       })
       return res.redirect('/')
     },
