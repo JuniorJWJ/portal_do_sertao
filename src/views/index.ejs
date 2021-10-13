@@ -1,0 +1,58 @@
+<html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Autor</title>
+  
+      <link rel="stylesheet" href="styles/main.css" />
+      
+    </head>
+    <body>
+        <h2 class=”titulo”>Cadastro de autores:</h2>
+        <form action="/create_autor" method="post">
+            <fieldset class="grupo">
+                <div class="campo">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" style="width: 20em" value="" />
+                </div>
+                <div class="campo">
+                    <label for="profissao">Profissão:</label>
+                    <input type="text" id="profissao" name="profissao" style="width: 20em" value="" />
+                </div>
+                <div class="campo">
+                    <label for="biografia">Biografia:</label>
+                    <textarea id="biografia" name="biografia" rows="4" cols="50"></textarea>
+                </div>
+            </fieldset>	
+            <button class="botao submit" type="submit" name="submit">Cadastrar</button>
+        </form>
+  
+      </form>
+      <table border="1">
+          <tr>
+              <td>Nome</td>
+              <td>Profissão</td>
+              <td>Biografia</td>
+              <td>Ação</td>
+          </tr>
+          <% autor.forEach((autor) => { %>
+            <tr>
+                <td><%= autor.nome %></td>
+                <td><%= autor.profissao %></td>
+                <td><%= autor.biografia %></td>
+                <td>
+                    <form action="/autor/delete/<%=autor.id%>" method="POST">
+                        <input type="hidden" name="id"/> 
+                        <button><img src="/images/icon_delet.png" class="icon" alt=""></button>
+                    </form>
+
+                    <form action="/autor/edit/<%=autor.id%>" method="POST">
+                        <input type="hidden" name="id"/> 
+                        <button><img src="/images/icon_edit.png" class="icon" alt=""></button>
+                    </form>                    
+                </td>
+            </tr>
+          <% })%>
+      </table>      
+  </body>
