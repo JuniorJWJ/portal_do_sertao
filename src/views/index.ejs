@@ -35,12 +35,16 @@
               <td>Profissão</td>
               <td>Biografia</td>
               <td>Ação</td>
+              <td>Email</td>
+              <td>Imagem</td>
           </tr>
           <% autor.forEach((autor) => { %>
             <tr>
                 <td><%= autor.nome %></td>
                 <td><%= autor.profissao %></td>
                 <td><%= autor.biografia %></td>
+                <td><%= autor.email %></td>
+                <td><img width="100px" height="100px" src="<%= autor.endereco_foto %>" alt=""></td>
                 <td>
                     <form action="/autor/delete/<%=autor.id%>" method="POST">
                         <input type="hidden" name="id"/> 
