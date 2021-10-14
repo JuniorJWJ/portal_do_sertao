@@ -32,7 +32,8 @@ module.exports = {
         nome: req.body.nome,
         profissao: req.body.profissao,
         biografia: req.body.biografia,        
-        email: req.body.email
+        email: req.body.email,
+        endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : ''
       }
       console.log(updatedAutor,"id = "+ autorId)
       await Autor.update(updatedAutor, autorId)

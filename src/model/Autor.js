@@ -52,7 +52,8 @@ module.exports = {
         nome = "${updatedAutor.nome}",
         profissao = "${updatedAutor.profissao}",
         biografia = "${updatedAutor.biografia}",
-        email = "${updatedAutor.email}"
+        email = "${updatedAutor.email}",
+        endereco_foto = "${updatedAutor.endereco_foto}"
         WHERE id = ${autorId}
       `)
 

@@ -11,7 +11,7 @@
     <body>
         <h2 class=”titulo”>Autor</h2>
         <% autor.forEach((autor) => { %>
-            <form action="/autor/update/<%=autor.id%>" method="post">
+            <form action="/autor/update/<%=autor.id%>" method="post" enctype="multipart/form-data">
                 <fieldset class="grupo">
                     <div class="campo">
                         <label for="nome">Nome</label>
