@@ -1,0 +1,41 @@
+<html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Autor Edit</title>
+  
+      <link rel="stylesheet" href="/styles/main.css" />
+      
+    </head>
+    <body>
+        <h2 class=”titulo”>Autor</h2>
+        <% autor.forEach((autor) => { %>
+            <form action="/autor/update/<%=autor.id%>" method="post">
+                <fieldset class="grupo">
+                    <div class="campo">
+                        <label for="nome">Nome</label>
+                        <input type="text" id="nome" name="nome" style="width: 20em" value="<%= autor.nome %>" />
+                    </div>
+                    <div class="campo">
+                        <label for="nome">Email</label>
+                        <input type="email" id="nome" name="email" style="width: 20em" value="<%= autor.email %>" />
+                    </div>
+                    <div class="campo">
+                        <label for="profissao">Profissão:</label>
+                        <input type="text" id="profissao" name="profissao" style="width: 20em" value="<%= autor.profissao %>" />
+                    </div>
+                    <div class="campo">
+                        <label for="biografia">Biografia:</label>
+                        <textarea id="biografia" name="biografia" rows="4" cols="50"><%= autor.biografia %></textarea>
+                    </div>
+                    <img width="100px" height="100px" src="<%= autor.endereco_foto %>" alt="">
+                </fieldset>	                
+                <input type="hidden" name="id" value="<%= autor.id %> "/> 
+                <button class="botao submit" type="submit" name="submit">Alterar</button>
+            </form>
+        <% })%>
+      
+  
+      </form>
+  </body>

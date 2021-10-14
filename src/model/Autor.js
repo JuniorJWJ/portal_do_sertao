@@ -49,6 +49,7 @@ module.exports = {
         nome = "${updatedList.nome}",
         profissao = "${updatedList.profissao}",
         biografia = "${updatedList.biografia}",
+        email = "${updatedList.email}",
         WHERE id = ${autorId}
       `)
 
@@ -65,7 +66,9 @@ module.exports = {
             id: autor.id,
             nome: autor.nome,
             profissao: autor.profissao,
-            biografia: autor.biografia
+            biografia: autor.biografia,
+            email: autor.email,
+            endereco_foto: autor.endereco_foto
         }))
     },
 }

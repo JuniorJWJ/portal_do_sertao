@@ -7,7 +7,6 @@ module.exports = {
       return res.render("index", {autor: autor})
     },
     async create(req, res) {
-      console.log(4)
       await Autor.create({
         nome: req.body.nome,
         profissao: req.body.profissao,
@@ -32,7 +31,8 @@ module.exports = {
       const updatedAutor = {
         nome: req.body.nome,
         profissao: req.body.profissao,
-        biografia: req.body.biografia,
+        biografia: req.body.biografia,        
+        email: req.body.email
       }
       console.log(updatedAutor, autorId)
       await Autor.update(updatedAutor, autorId)
