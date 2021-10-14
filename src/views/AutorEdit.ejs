@@ -32,6 +32,10 @@
                     <img width="100px" height="100px" src="<%= autor.endereco_foto %>" alt="">
                 </fieldset>	                
                 <input type="hidden" name="id" value="<%= autor.id %> "/> 
+                <div class="campo">
+                    <label for="imagem">Imagem:</label>
+                    <input type="file" name="file" id="imagem">
+                </div>
                 <button class="botao submit" type="submit" name="submit">Alterar</button>
             </form>
         <% })%>

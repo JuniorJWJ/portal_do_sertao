@@ -42,14 +42,17 @@ module.exports = {
 
         await db.close()
     },
-    async update(updatedList, autorId) {
+    async update(updatedAutor, autorId) {
         const db = await Database()
         
+        console.log("dentro do model")
+        console.log(updatedAutor, "id = " + autorId)
+
         await db.run(`UPDATE autor SET
-        nome = "${updatedList.nome}",
-        profissao = "${updatedList.profissao}",
-        biografia = "${updatedList.biografia}",
-        email = "${updatedList.email}",
+        nome = "${updatedAutor.nome}",
+        profissao = "${updatedAutor.profissao}",
+        biografia = "${updatedAutor.biografia}",
+        email = "${updatedAutor.email}"
         WHERE id = ${autorId}
       `)
 

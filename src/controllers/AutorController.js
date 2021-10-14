@@ -34,7 +34,7 @@ module.exports = {
         biografia: req.body.biografia,        
         email: req.body.email
       }
-      console.log(updatedAutor, autorId)
+      console.log(updatedAutor,"id = "+ autorId)
       await Autor.update(updatedAutor, autorId)
   
       res.redirect('/')
