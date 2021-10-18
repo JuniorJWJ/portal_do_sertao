@@ -1,6 +1,6 @@
 const express = require('express');
 const autorController = require('./controllers/autorController');
-const uploadController = require('./controllers/uploadController');
+const obraController = require('./controllers/ObraController');
 
 const multer = require("multer");
 const multerConfig = require("./config/multer")
@@ -12,12 +12,8 @@ route.post('/create_autor',multer(multerConfig).single("file"), autorController.
 route.post('/autor/delete/:id', autorController.delete)
 route.post('/autor/edit/:id', autorController.show)
 route.post('/autor/update/:id',multer(multerConfig).single("file"), autorController.update)
-route.get("/formupload", uploadController.get)
-route.post("/posts", multer(multerConfig).single("file"), (req, res) => {
-    console.log(req.file.filename)
-
-    return res.json({ hello:"Davy"})
-})
-
+//obra
+route.get('/obra', obraController.get)
+route.post('/create_obra',multer(multerConfig).single("file"), obraController.create)
 
 module.exports = route;

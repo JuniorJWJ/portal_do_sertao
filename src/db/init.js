@@ -13,6 +13,13 @@ const initDb = {
             biografia TEXT
         )`);
 
+        await db.exec(`CREATE TABLE obra (
+            id INTEGER PRIMARY KEY,
+            nome VARCHAR,
+            id_autor INTEGER,
+            endereco_pdf VARCHAR
+        )`);
+
         await db.close()
     }
 }
