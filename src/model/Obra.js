@@ -7,7 +7,7 @@ module.exports = {
 
         await db.close()
 
-        console.log("dentro do model :" + data)
+        //console.log("dentro do model :" + data)
         return data.map( obra => obra);
     },
     async create(newObra){
@@ -29,5 +29,39 @@ module.exports = {
         } catch (error) {
             console.log(error);
         }
-    }
+    },
+    async delete(id){
+        const db = await Database()
+
+        await db.run(`DELETE FROM obra WHERE id = ${id}`)
+
+        await db.close()
+    },
+    async update(updatedObra, obraId) {
+        const db = await Database()
+        
+
+        await db.run(`UPDATE obra SET
+        nome = "${updatedObra.nome}",
+        id_autor = "${updatedObra.id_autor}",
+        endereco_pdf = "${updatedObra.endereco_pdf}"
+        WHERE id = ${obraId }
+      `)
+
+      await db.close()
+    },
+    async show(obraId){
+        const db = await Database()
+
+        const data = await db.all(`SELECT * FROM obra WHERE id = ${obraId} `)
+
+        await db.close()
+
+        return data.map( obra =>({ 
+            id: obra.id,
+            nome: obra.nome,
+            id_autor: obra.id_autor,
+            endereco_pdf: obra.endereco_pdf
+        }))
+    },
 }

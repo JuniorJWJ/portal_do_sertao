@@ -1,0 +1,40 @@
+<html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Autor Edit</title>
+  
+      <link rel="stylesheet" href="/styles/main.css" />
+      
+    </head>
+    <body>
+        <h2 class=”titulo”>Autor</h2>
+        <% obra.forEach((obra) => { %>
+            <form action="/obra/update/<%=obra.id%>" method="post" enctype="multipart/form-data">
+                <div class="campo">
+                        <fieldset class="grupo">
+                        <label for="nome">Nome:</label>
+                        <input type="text" id="nome" name="nome" style="width: 20em" value="<%= obra.nome %>" />
+                    </div>
+                    <div class="campo">
+                        <label for="select_autor">Autor:</label>
+                        <select name="select_autor" id="select_autor">
+                            <% autor.forEach((autor) => { %>
+                                <option value="<%= autor.id %>"><%= autor.nome %> </option>
+                            <% })%>
+                        </select>
+                    </div>
+                    <a href="<%= obra.endereco_pdf %>"><%= obra.nome %></a>
+                    <div class="campo">
+                        <label for="imagem">PDF:</label>
+                        <input type="file" name="file" id="pdf">
+                    </div>
+                </fieldset>	
+                <button class="botao submit" type="submit" name="submit">Alterar</button>
+            </form>
+        <% })%>
+      
+  
+      </form>
+  </body>

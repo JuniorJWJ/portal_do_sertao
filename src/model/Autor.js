@@ -10,7 +10,7 @@ module.exports = {
         return data.map( autor => autor);
     },
     async create(newAutor){
-        console.log(newAutor)
+        //console.log(newAutor)
         try {
             const db = await Database()
 
@@ -45,8 +45,8 @@ module.exports = {
     async update(updatedAutor, autorId) {
         const db = await Database()
         
-        console.log("dentro do model")
-        console.log(updatedAutor, "id = " + autorId)
+        //console.log("dentro do model")
+        //console.log(updatedAutor, "id = " + autorId)
 
         await db.run(`UPDATE autor SET
         nome = "${updatedAutor.nome}",

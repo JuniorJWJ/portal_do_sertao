@@ -6,17 +6,46 @@ module.exports = {
         const obra = await Obra.get()
         const autor = await Autor.get()
 
-        console.log(autor)
-
         return res.render("obra", {obra: obra, autor: autor})
     },
     async create(req, res) {
         await Obra.create({
             nome: req.body.nome,
-            id_autor: req.body.profissao,
+            id_autor: req.body.select_autor,
             endereco_pdf: req.file ? `http://localhost:3000/pdf/${req.file.filename}` : '' 
         })
         return res.redirect('/obra')
     },
+    async delete(req, res) {
+        const obraId = req.params.id
+      
+        Obra.delete(obraId)
+      
+        return res.redirect('/obra')
+      },
+      async update(req, res) {
+        const obraId = req.params.id
+  
+        const updatedObra = {
+          nome: req.body.nome,
+          id_autor: req.body.select_autor,       
+          endereco_pdf: req.file ? `http://localhost:3000/images/${req.file.filename}` : ''
+        }
+        console.log("update: ", updatedObra)
+        await Obra.update(updatedObra, obraId)
+    
+        res.redirect('/obra')
+      },
+  
+      //exibir o que vai ser editado
+      async show(req,res){
+        const obraId = req.params.id
+  
+        const obra = await Obra.show(obraId)
+
+        const autor = await Autor.get()
+    
+        return res.render("obraEdit", {obra: obra, autor: autor})
+      }
 
 }

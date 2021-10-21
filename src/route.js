@@ -15,5 +15,8 @@ route.post('/autor/update/:id',multer(multerConfig).single("file"), autorControl
 //obra
 route.get('/obra', obraController.get)
 route.post('/create_obra',multer(multerConfig).single("file"), obraController.create)
+route.post('/obra/delete/:id', obraController.delete)
+route.post('/obra/edit/:id', obraController.show)
+route.post('/obra/update/:id',multer(multerConfig).single("file"), obraController.update)
 
 module.exports = route;

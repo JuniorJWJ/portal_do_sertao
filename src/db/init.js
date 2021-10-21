@@ -16,8 +16,9 @@ const initDb = {
         await db.exec(`CREATE TABLE obra (
             id INTEGER PRIMARY KEY,
             nome VARCHAR,
+            endereco_pdf VARCHAR,
             id_autor INTEGER,
-            endereco_pdf VARCHAR
+            FOREIGN KEY (id_autor) REFERENCES autor(id)
         )`);
 
         await db.close()

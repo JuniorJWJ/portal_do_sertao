@@ -18,11 +18,11 @@
                 </div>
                 <div class="campo">
                     <label for="select_autor">Autor:</label>
-                    <select name="opcoes" id="select_autor">
+                    <select name="select_autor" id="select_autor">
                         <% autor.forEach((autor) => { %>
-                            <option value="<%= autor.nome %>"><%= autor.nome %> </option>
+                            <option value="<%= autor.id %>"><%= autor.nome %> </option>
                         <% })%>
-                     </select>
+                    </select>
                 </div>
                 <div class="campo">
                     <label for="imagem">PDF:</label>
