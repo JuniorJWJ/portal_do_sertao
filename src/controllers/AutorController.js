@@ -1,10 +1,14 @@
 const Autor = require('../model/autor')
+const Cidade = require('../model/cidade')
 
 module.exports = {
     async get(req,res){
       const autor = await Autor.get()
+      const cidade = await Cidade.get()
 
-      return res.render("index", {autor: autor})
+      // console.log(cidade)
+
+      return res.render("index", {autor: autor, cidade: cidade})
     },
     async create(req, res) {
       await Autor.create({

@@ -10,7 +10,10 @@ const initDb = {
             profissao VARCHAR,
             email VARCHAR,
             endereco_foto VARCHAR,
-            biografia TEXT
+            biografia TEXT,
+            genero VARCHAR,
+            id_cidade INTEGER,
+            FOREIGN KEY (id_cidade) REFERENCES cidade(id)
         )`);
 
         await db.exec(`CREATE TABLE obra (
@@ -18,7 +21,19 @@ const initDb = {
             nome VARCHAR,
             endereco_pdf VARCHAR,
             id_autor INTEGER,
+            id_genero_literario INTEGER,
+            FOREIGN KEY (id_genero_literario) REFERENCES generoLiterario(id)
             FOREIGN KEY (id_autor) REFERENCES autor(id)
+        )`);
+
+        await db.exec(`CREATE TABLE cidade (
+            id INTEGER PRIMARY KEY,
+            nome VARCHAR
+        )`);
+
+        await db.exec(`CREATE TABLE generoLiterario (
+            id INTEGER PRIMARY KEY,
+            nome VARCHAR
         )`);
 
         await db.close()

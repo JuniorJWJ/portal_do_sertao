@@ -29,6 +29,14 @@
                     <textarea id="biografia" name="biografia" rows="4" cols="50"></textarea>
                 </div>
                 <div class="campo">
+                    <label for="select_cidade">Cidade:</label>
+                    <select name="select_cidade" id="select_cidade">
+                        <% cidade.forEach((cidade) => { %>
+                            <option value="<%= cidade.id %>"><%= cidade.nome %> </option>
+                        <% })%>
+                    </select>
+                </div>
+                <div class="campo">
                     <label for="imagem">Imagem:</label>
                     <input type="file" name="file" id="imagem">
                 </div>

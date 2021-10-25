@@ -7,6 +7,7 @@ module.exports = {
 
         await db.close()
 
+        
         //console.log("dentro do model :" + data)
         return data.map( obra => obra);
     },
@@ -18,10 +19,12 @@ module.exports = {
             await db.run(`INSERT INTO obra (
                 nome,
                 id_autor,
+                id_genero_literario,
                 endereco_pdf
             ) VALUES (
                 "${newObra.nome}",
                 "${newObra.id_autor}",
+                "${newObra.id_genero_literario}",
                 "${newObra.endereco_pdf || ''}"
             )`)
 
