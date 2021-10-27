@@ -6,9 +6,7 @@ module.exports = {
       const autor = await Autor.get()
       const cidade = await Cidade.get()
 
-      // console.log(cidade)
-
-      return res.render("index", {autor: autor, cidade: cidade})
+      return res.render("listaAutor", {autor: autor, cidade: cidade})
     },
     async create(req, res) {
       await Autor.create({
@@ -16,16 +14,18 @@ module.exports = {
         profissao: req.body.profissao,
         biografia: req.body.biografia,
         email: req.body.email,
+        id_cidade: req.body.select_cidade,
+        genero: req.body.select_genero,        
         endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : '' 
       })
-      return res.redirect('/')
+      return res.redirect('/lista_autor')
     },
     async delete(req, res) {
       const autorId = req.params.id
     
       Autor.delete(autorId)
     
-      return res.redirect('/')
+      return res.redirect('/lista_autor')
     },
     async update(req, res) {
       const autorId = req.params.id
@@ -37,20 +37,35 @@ module.exports = {
         profissao: req.body.profissao,
         biografia: req.body.biografia,        
         email: req.body.email,
+        id_cidade: req.body.select_cidade,
+        genero: req.body.select_genero,  
         endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : ''
       }
       console.log(updatedAutor,"id = "+ autorId)
       await Autor.update(updatedAutor, autorId)
   
-      res.redirect('/')
+      res.redirect('/lista_autor')
     },
+    //exibir o que vai ser editado
+    async show_edit(req,res){
+      const autorId = req.params.id
 
+      const autor = await Autor.show(autorId)
+      
+      const cidade = await Cidade.get()
+
+  
+      return res.render("autorEdit", {autor: autor, cidade: cidade})
+    },
     //exibir o que vai ser editado
     async show(req,res){
       const autorId = req.params.id
 
       const autor = await Autor.show(autorId)
+      console.log(autor)
+      const cidade = await Cidade.show(autorId)
+
   
-      return res.render("autorEdit", {autor: autor})
+      return res.render("Autor", {autor: autor, cidade: cidade})
     }
 }

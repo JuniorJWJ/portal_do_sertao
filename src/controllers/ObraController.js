@@ -8,7 +8,7 @@ module.exports = {
         const autor = await Autor.get()
         const generoLiterario = await GeneroLiterario.get()
 
-        return res.render("obra", {obra: obra, autor: autor, generoLiterario: generoLiterario})
+        return res.render("listaObra", {obra: obra, autor: autor, generoLiterario: generoLiterario})
     },
     async create(req, res) {
         await Obra.create({
@@ -17,14 +17,14 @@ module.exports = {
             id_genero_literario: req.body.select_genero_literario,      
             endereco_pdf: req.file ? `http://localhost:3000/pdf/${req.file.filename}` : '' 
         })
-        return res.redirect('/obra')
+        return res.redirect('/lista_obra')
     },
     async delete(req, res) {
         const obraId = req.params.id
       
         Obra.delete(obraId)
       
-        return res.redirect('/obra')
+        return res.redirect('/lista_obra')
       },
       async update(req, res) {
         const obraId = req.params.id
@@ -38,7 +38,7 @@ module.exports = {
         console.log("update: ", updatedObra)
         await Obra.update(updatedObra, obraId)
     
-        res.redirect('/obra')
+        res.redirect('/lista_obra')
       },
   
       //exibir o que vai ser editado

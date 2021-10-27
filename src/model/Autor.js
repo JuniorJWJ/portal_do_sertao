@@ -19,13 +19,17 @@ module.exports = {
                 profissao,
                 biografia,
                 email,
-                endereco_foto
+                endereco_foto,
+                genero,
+                id_cidade
             ) VALUES (
                 "${newAutor.nome}",
                 "${newAutor.profissao}",
                 "${newAutor.biografia}",
                 "${newAutor.email || ''}",
-                "${newAutor.endereco_foto || ''}"
+                "${newAutor.endereco_foto || ''}",
+                "${newAutor.genero}",
+                "${newAutor.id_cidade}"
             )`)
 
             await db.close()
@@ -44,16 +48,15 @@ module.exports = {
     },
     async update(updatedAutor, autorId) {
         const db = await Database()
-        
-        //console.log("dentro do model")
-        //console.log(updatedAutor, "id = " + autorId)
 
         await db.run(`UPDATE autor SET
         nome = "${updatedAutor.nome}",
         profissao = "${updatedAutor.profissao}",
         biografia = "${updatedAutor.biografia}",
         email = "${updatedAutor.email}",
-        endereco_foto = "${updatedAutor.endereco_foto}"
+        endereco_foto = "${updatedAutor.endereco_foto}",
+        genero = "${updatedAutor.genero}",
+        id_cidade = "${updatedAutor.id_cidade}"
         WHERE id = ${autorId}
       `)
 
@@ -72,7 +75,8 @@ module.exports = {
             profissao: autor.profissao,
             biografia: autor.biografia,
             email: autor.email,
-            endereco_foto: autor.endereco_foto
+            endereco_foto: autor.endereco_foto,
+            genero: autor.genero
         }))
     },
 }
