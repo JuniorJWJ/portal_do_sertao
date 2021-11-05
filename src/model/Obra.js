@@ -47,7 +47,8 @@ module.exports = {
         await db.run(`UPDATE obra SET
         nome = "${updatedObra.nome}",
         id_autor = "${updatedObra.id_autor}",
-        endereco_pdf = "${updatedObra.endereco_pdf}"
+        endereco_pdf = "${updatedObra.endereco_pdf}",
+        id_genero_literario = "${updatedObra.id_genero_literario}"
         WHERE id = ${obraId }
       `)
 
@@ -64,7 +65,8 @@ module.exports = {
             id: obra.id,
             nome: obra.nome,
             id_autor: obra.id_autor,
-            endereco_pdf: obra.endereco_pdf
+            endereco_pdf: obra.endereco_pdf,
+            id_genero_literario: obra.id_genero_literario,
         }))
     },
 }

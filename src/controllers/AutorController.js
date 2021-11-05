@@ -29,8 +29,6 @@ module.exports = {
     },
     async update(req, res) {
       const autorId = req.params.id
-      console.log("autorId")
-      console.log(autorId)
 
       const updatedAutor = {
         nome: req.body.nome,
@@ -62,9 +60,9 @@ module.exports = {
       const autorId = req.params.id
 
       const autor = await Autor.show(autorId)
-      console.log(autor)
-      const cidade = await Cidade.show(autorId)
-
+      const id_cidade = autor.map(autor => autor.id_cidade)
+      console.log(id_cidade)
+      const cidade = await Cidade.show(id_cidade)
   
       return res.render("Autor", {autor: autor, cidade: cidade})
     }

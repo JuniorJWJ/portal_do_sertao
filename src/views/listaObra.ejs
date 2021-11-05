@@ -46,14 +46,14 @@
           <tr>
               <td>Nome</td>
               <td>Autor</td>
-              <td>Link</td>
+              <!-- <td>Link</td> -->
               <td>Ação</td>
           </tr>
           <% obra.forEach((obra) => { %>
             <tr>
-                <td><%= obra.nome %></td>
+                <td><a href="/obra/<%=obra.id%>"><%= obra.nome %></a></td>
                 <td><%= obra.id_autor %></td>
-                <td><a href="<%= obra.endereco_pdf %>"><%= obra.nome %></a></li></td>
+                <!-- <td><a href="<%= obra.endereco_pdf %>"><%= obra.nome %></a></li></td> -->
                 <td>
                     <form action="/obra/delete/<%=obra.id%>" method="POST">
                         <input type="hidden" name="id"/> 

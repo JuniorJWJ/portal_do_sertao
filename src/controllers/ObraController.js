@@ -42,14 +42,29 @@ module.exports = {
       },
   
       //exibir o que vai ser editado
+      async show_edit(req,res){
+        const obraId = req.params.id
+  
+        const obra = await Obra.show(obraId)
+        const generoLiterario = await GeneroLiterario.get()
+        const autor = await Autor.get()
+    
+        return res.render("obraEdit", {obra: obra, autor: autor, generoLiterario: generoLiterario})
+      },
       async show(req,res){
         const obraId = req.params.id
   
         const obra = await Obra.show(obraId)
-
-        const autor = await Autor.get()
+        const id_genero_literario = obra.map(obra => obra.id_genero_literario)
+        // console.log(id_genero_literario)
+        const id_autor = obra.map(obra => obra.id_autor)
+        // console.log(id_autor)
+        const generoLiterario = await GeneroLiterario.show(id_genero_literario)
+        const autor = await Autor.show(id_autor)
     
-        return res.render("obraEdit", {obra: obra, autor: autor})
+        //const obraUpdated = obra.map( id_autor= autor.nome )
+
+        return res.render("Obra", {obra: obra, autor: autor, generoLiterario: generoLiterario})
       }
 
 }

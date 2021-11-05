@@ -25,6 +25,14 @@
                             <% })%>
                         </select>
                     </div>
+                    <div class="campo">
+                        <label for="select_genero_literario">Gênero Literário:</label>
+                        <select name="select_genero_literario" id="select_genero_literario">
+                            <% generoLiterario.forEach((generoLiterario) => { %>
+                                <option value="<%= generoLiterario.id %>"><%= generoLiterario.nome %> </option>
+                            <% })%>
+                        </select>
+                    </div>
                     <a href="<%= obra.endereco_pdf %>"><%= obra.nome %></a>
                     <div class="campo">
                         <label for="imagem">PDF:</label>

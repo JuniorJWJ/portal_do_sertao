@@ -7,8 +7,18 @@ module.exports = {
 
         await db.close()
 
-        
-        //console.log("dentro do model :" + data)
         return data.map( generoLiterario => generoLiterario);
-    }
+    },
+    async show(generoId){
+        const db = await Database()
+
+        const data = await db.all(`SELECT * FROM generoLiterario WHERE id = ${generoId} `)
+
+        await db.close()
+
+        return data.map( generoLiterario =>({ 
+            id: generoLiterario.id,
+            nome: generoLiterario.nome
+        }))
+    },
 }

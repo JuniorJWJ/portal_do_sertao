@@ -76,7 +76,8 @@ module.exports = {
             biografia: autor.biografia,
             email: autor.email,
             endereco_foto: autor.endereco_foto,
-            genero: autor.genero
+            genero: autor.genero,
+            id_cidade: autor.id_cidade
         }))
     },
 }
