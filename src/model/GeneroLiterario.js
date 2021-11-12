@@ -3,7 +3,7 @@ const Database = require('../db/config')
 module.exports = {
     async get(){
         const db = await Database()
-        const data = await db.all(`SELECT * FROM generoLiterario`)
+        const data = await db.all(`SELECT * FROM generoLiterario order by nome`)
 
         await db.close()
 

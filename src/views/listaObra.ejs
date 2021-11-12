@@ -10,7 +10,8 @@
     </head>
     <body>
         <%- include('parts/pageHeader') %>
-        <h2 class=”titulo”>Cadastro de obras:</h2>
+        <br><hr><br>
+        <!--<h2 class=”titulo”>Cadastro de obras:</h2>
         <form action="/create_obra" method="post" enctype="multipart/form-data">
             <div class="campo">
                     <fieldset class="grupo">
@@ -39,10 +40,11 @@
                 </div>
             </fieldset>	
             <button class="botao submit" type="submit" name="submit">Cadastrar</button>
-        </form>
-  
-      </form>
-      <table border="1">
+        </form> -->
+        <% generoLiterario.forEach((generoLiterario) => { %>
+            <a href="/lista_obra/genero/<%= generoLiterario.id %> "><%= generoLiterario.nome %> </a><br>
+        <% })%>
+        <table border="1">
           <tr>
               <td>Nome</td>
               <td>Autor</td>
@@ -67,5 +69,5 @@
                 </td>
             </tr>
           <% })%>
-      </table>      
-  </body>
+        </table>      
+    </body>

@@ -69,4 +69,19 @@ module.exports = {
             id_genero_literario: obra.id_genero_literario,
         }))
     },
+    async show_genero(idGenero){
+        const db = await Database()
+        console.log(idGenero)
+        const data = await db.all(`SELECT * FROM obra WHERE id_genero_literario = ${idGenero} `)
+
+        await db.close()
+
+        return data.map( obra =>({ 
+            id: obra.id,
+            nome: obra.nome,
+            id_autor: obra.id_autor,
+            endereco_pdf: obra.endereco_pdf,
+            id_genero_literario: obra.id_genero_literario,
+        }))
+    },
 }
