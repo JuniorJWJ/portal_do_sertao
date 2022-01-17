@@ -19,10 +19,10 @@ module.exports = {
   },
   async create(req, res) {
     await Obra.create({
-        nome: req.body.nome,
-        id_autor: req.body.select_autor,
-        id_genero_literario: req.body.select_genero_literario,      
-        endereco_pdf: req.file ? `http://localhost:3000/pdf/${req.file.filename}` : '' 
+      nome: req.body.nome,
+      id_autor: req.body.select_autor,
+      id_genero_literario: req.body.select_genero_literario,      
+      endereco_pdf: req.file ? `http://localhost:3000/pdf/${req.file.filename}` : '' 
     })
     return res.redirect('/lista_obra')
   },
@@ -36,11 +36,20 @@ module.exports = {
   async update(req, res) {
     const obraId = req.params.id
 
-    const updatedObra = {
+    var updatedObra = {
       nome: req.body.nome,
       id_autor: req.body.select_autor,    
       id_genero_literario: req.body.select_genero_literario,       
       endereco_pdf: req.file ? `http://localhost:3000/images/${req.file.filename}` : ''
+    }
+    if(!updatedObra.endereco_pdf){
+      var ObraBDteste = await Obra.show(obraId)
+      console.log("ObraBDteste:")
+      console.log(ObraBDteste)
+      console.log("ObraBDteste.endereco_pdf:")
+      console.log(ObraBDteste[0].endereco_pdf)
+      console.log("///")
+      updatedObra.endereco_pdf = ObraBDteste[0].endereco_pdf
     }
     console.log("update: ", updatedObra)
     await Obra.update(updatedObra, obraId)

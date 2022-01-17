@@ -10,37 +10,9 @@
     </head>
     <body>
         <%- include('parts/pageHeader') %>
+        
         <br><hr><br>
-        <!--<h2 class=”titulo”>Cadastro de obras:</h2>
-        <form action="/create_obra" method="post" enctype="multipart/form-data">
-            <div class="campo">
-                    <fieldset class="grupo">
-                    <label for="nome">Nome:</label>
-                    <input type="text" id="nome" name="nome" style="width: 20em" value="" />
-                </div>
-                <div class="campo">
-                    <label for="select_autor">Autor:</label>
-                    <select name="select_autor" id="select_autor">
-                        <% autor.forEach((autor) => { %>
-                            <option value="<%= autor.id %>"><%= autor.nome %> </option>
-                        <% })%>
-                    </select>
-                </div>
-                <div class="campo">
-                    <label for="select_genero_literario">Gênero Literário:</label>
-                    <select name="select_genero_literario" id="select_genero_literario">
-                        <% generoLiterario.forEach((generoLiterario) => { %>
-                            <option value="<%= generoLiterario.id %>"><%= generoLiterario.nome %> </option>
-                        <% })%>
-                    </select>
-                </div>
-                <div class="campo">
-                    <label for="imagem">PDF:</label>
-                    <input type="file" name="file" id="pdf">
-                </div>
-            </fieldset>	
-            <button class="botao submit" type="submit" name="submit">Cadastrar</button>
-        </form> -->
+        
         <% generoLiterario.forEach((generoLiterario) => { %>
             <a href="/lista_obra/genero/<%= generoLiterario.id %> "><%= generoLiterario.nome %> </a><br>
         <% })%>
@@ -48,14 +20,12 @@
           <tr>
               <td>Nome</td>
               <td>Autor</td>
-              <!-- <td>Link</td> -->
               <td>Ação</td>
           </tr>
           <% obra.forEach((obra) => { %>
             <tr>
                 <td><a href="/obra/<%=obra.id%>"><%= obra.nome %></a></td>
                 <td><%= obra.id_autor %></td>
-                <!-- <td><a href="<%= obra.endereco_pdf %>"><%= obra.nome %></a></li></td> -->
                 <td>
                     <form action="/obra/delete/<%=obra.id%>" method="POST">
                         <input type="hidden" name="id"/> 
