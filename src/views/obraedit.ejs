@@ -9,7 +9,7 @@
       
     </head>
     <body>
-        <h2 class=”titulo”>Autor</h2>
+        <h2 class=”titulo”>Obra</h2>
         <% obra.forEach((obra) => { %>
             <form action="/obra/update/<%=obra.id%>" method="post" enctype="multipart/form-data">
                 <div class="campo">
@@ -21,7 +21,11 @@
                         <label for="select_autor">Autor:</label>
                         <select name="select_autor" id="select_autor">
                             <% autor.forEach((autor) => { %>
-                                <option value="<%= autor.id %>"><%= autor.nome %> </option>
+                                <% if(autor.id == obra.id_autor) { %>
+                                    <option value="<%= autor.id %>" selected><%= autor.nome %> </option>
+                                <% }else{ %>
+                                    <option value="<%= autor.id %>"><%= autor.nome %> </option>
+                                <% } %> 
                             <% })%>
                         </select>
                     </div>
