@@ -3,12 +3,12 @@ const Database = require('../db/config')
 module.exports = {
     async get(){
         const db = await Database()
-        const data = await db.all(`SELECT * FROM obra`)
+        const data = await db.all(`SELECT o.nome, a.nome as autor FROM obra o, autor a WHERE o.id_autor = a.id`)
 
         await db.close()
 
         
-        //console.log("dentro do model :" + data)
+        //console.log("dentro do model :" + data.map( obra => obra))
         return data.map( obra => obra);
     },
     async create(newObra){

@@ -7,7 +7,18 @@ module.exports = {
     const obra = await Obra.get()
     const autor = await Autor.get()
     const generoLiterario = await GeneroLiterario.get()
-    
+    //console.log(obra)
+    // obra.forEach(() =>{
+    //   //console.log(obra[0].id_autor)
+    //   let nome_autor = autor.filter(x => x.id == obra[0].id_autor)
+    //   console.log(nome_autor[0])
+    //   //obra.id_autor = nome_autor
+    // })
+    // //console.log(obra)
+    // //const nome_autor = autor.filter(x => x.nome == 'autor2')
+    // //console.log(nome_autor)
+    // //console.log(autor)
+
     return res.render("listaObra", {obra: obra, autor: autor, generoLiterario: generoLiterario})
   },
   async create_obra_get(req,res){
@@ -44,11 +55,6 @@ module.exports = {
     }
     if(!updatedObra.endereco_pdf){
       var ObraBDteste = await Obra.show(obraId)
-      console.log("ObraBDteste:")
-      console.log(ObraBDteste)
-      console.log("ObraBDteste.endereco_pdf:")
-      console.log(ObraBDteste[0].endereco_pdf)
-      console.log("///")
       updatedObra.endereco_pdf = ObraBDteste[0].endereco_pdf
     }
     console.log("update: ", updatedObra)
