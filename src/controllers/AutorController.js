@@ -36,7 +36,7 @@ module.exports = {
   async update(req, res) {
     const autorId = req.params.id
 
-    const updatedAutor = {
+    var updatedAutor = {
       nome: req.body.nome,
       profissao: req.body.profissao,
       biografia: req.body.biografia,        
@@ -44,6 +44,10 @@ module.exports = {
       id_cidade: req.body.select_cidade,
       genero: req.body.select_genero,  
       endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : ''
+    }
+    if(!updatedAutor.endereco_foto){
+      var AutorBDteste = await Autor.show(autorId)
+      updatedAutor.endereco_foto = AutorBDteste[0].endereco_foto
     }
     console.log(updatedAutor,"id = "+ autorId)
     await Autor.update(updatedAutor, autorId)

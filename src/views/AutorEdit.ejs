@@ -35,7 +35,11 @@
                     <label for="select_cidade">Cidade:</label>
                     <select name="select_cidade" id="select_cidade">
                         <% cidade.forEach((cidade) => { %>
-                            <option value="<%= cidade.id %>"><%= cidade.nome %> </option>
+                            <% if(cidade.id == autor.id_cidade) { %>
+                                <option value="<%= cidade.id %>" selected><%= cidade.nome %> </option>
+                            <% }else{ %>
+                                <option value="<%= cidade.id %>"><%= cidade.nome %> </option>
+                            <% } %>  
                         <% })%>
                     </select>
                 </div>
