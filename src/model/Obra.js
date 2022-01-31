@@ -7,8 +7,18 @@ module.exports = {
 
         await db.close()
 
-        
-        //console.log("dentro do model :" + data.map( obra => obra))
+        return data.map( obra => obra);
+    },
+    async get_home(){
+        const db = await Database()
+        const data = await db.all(` SELECT o.nome, o.id, o.id_genero_literario, o.endereco_pdf, a.nome as autor 
+                                    FROM obra o, autor a 
+                                    WHERE o.id_autor = a.id
+                                    ORDER BY o.id DESC
+                                    LIMIT 5`)
+
+        await db.close()
+
         return data.map( obra => obra);
     },
     async create(newObra){

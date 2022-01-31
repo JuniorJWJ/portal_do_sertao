@@ -3,13 +3,16 @@ const indexController = require('./controllers/IndexController');
 const autorController = require('./controllers/autorController');
 const obraController = require('./controllers/ObraController');
 const generoLiterarioController = require('./controllers/generoLiterarioController');
+const sobreController = require('./controllers/sobreController');
 
 const multer = require("multer");
 const multerConfig = require("./config/multer")
 
 const route = express.Router()
-
+//home
 route.get('/', indexController.get)
+//sobread
+route.get('/sobre', sobreController.get)
 //autor
 route.get('/lista_autor', autorController.get)
 route.get('/create_autor', autorController.create_autor_get)

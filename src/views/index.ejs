@@ -13,4 +13,11 @@
     <body>
         <%- include('parts/pageHeader') %> 
         <h6>HOME</h6> 
+        <h1>Últimas postagens :</h1>
+        <% obra.forEach((obra) => { %>
+              <a href="/obra/<%=obra.id%>"><%= obra.nome %></a>
+              <%= obra.autor %>
+              <br>
+        <% })%>
+        <h2><a href="https://docs.google.com/forms/d/e/1FAIpQLSfFw5MwhpNudp8t0zQ_O4IxSECSOBS1iJ7u9L8BnFMfekJCyA/viewform">Quer fazer parte bla bla bla, n sei qual texto por aqui, clique aqui</a> </h2>
   </body>
