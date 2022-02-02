@@ -36,6 +36,15 @@ const initDb = {
             nome VARCHAR
         )`);
 
+        await db.exec(`CREATE TABLE user (
+            id INTEGER PRIMARY KEY,
+            nome varchar(255) NOT NULL,
+            email varchar(255) NOT NULL,
+            password varchar(255) NULL,
+            createdAt datetime NOT NULL,
+            updatedAt datetime NOT NULL
+        )`);
+
         await db.close()
     }
 }

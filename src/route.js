@@ -4,6 +4,10 @@ const autorController = require('./controllers/autorController');
 const obraController = require('./controllers/ObraController');
 const generoLiterarioController = require('./controllers/generoLiterarioController');
 const sobreController = require('./controllers/sobreController');
+const userController = require('./controllers/userController');
+
+
+const { eAdmin } = require('../middlewares/auth');
 
 const multer = require("multer");
 const multerConfig = require("./config/multer")
@@ -30,5 +34,9 @@ route.post('/obra/delete/:id', obraController.delete)
 route.post('/obra/edit/:id', obraController.show_edit)
 route.get('/obra/:id', obraController.show)
 route.post('/obra/update/:id',multer(multerConfig).single("file"), obraController.update)
+//user
+route.post('/create_user', userController.create)
+route.post('/log_user', userController.log_user)
+route.get('/teste', eAdmin, userController.show_users)
 
 module.exports = route;
