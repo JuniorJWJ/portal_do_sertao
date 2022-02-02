@@ -38,5 +38,7 @@ route.post('/obra/update/:id',multer(multerConfig).single("file"), obraControlle
 route.post('/create_user', userController.create)
 route.post('/log_user', userController.log_user)
 route.get('/teste', eAdmin, userController.show_users)
+route.get('/create_user', userController.create_user_get)
+route.get('/log_user', userController.log_user_get)
 
 module.exports = route;

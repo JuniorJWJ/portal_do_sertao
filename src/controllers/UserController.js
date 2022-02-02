@@ -65,5 +65,13 @@ module.exports = {
             mensagem: "Erro: Nenhum usuário encontrado!"
         });
     });    
-  }
+  },
+  async create_user_get(req,res){ 
+
+    return res.render("createUser")
+  },
+  async log_user_get(req,res){ 
+
+    return res.render("logUser")
+  },
 }
