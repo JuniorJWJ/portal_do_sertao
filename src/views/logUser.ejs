@@ -4,9 +4,9 @@
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>Obra</title>
-  
+        
       <link rel="stylesheet" href="styles/main.css" />
-      
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     </head>
     <body>
         <%- include('parts/pageHeader') %>
@@ -25,4 +25,16 @@
             <button type="submit">Logar</button>
         </form>
   </body>
+  <script>
+      const form = document.querySelector("form")
+      form.addEventListener('submit', (event) => {
+        event.preventDefault()
+        const email = document.querySelector("#login")
+        const password = document.querySelector("#password")
+        axios.post('/log_user', { email: email.value, password: password.value}).then((response) => {
+            localStorage.setItem('portal@token', response.data.token)
+            window.location.href = 'http://localhost:3000/'
+        })
+      })
+  </script>
 </html>
