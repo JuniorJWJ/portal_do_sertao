@@ -33,7 +33,7 @@
         const password = document.querySelector("#password")
         axios.post('/log_user', { email: email.value, password: password.value}).then((response) => {
             localStorage.setItem('portal@token', response.data.token)
-            window.location.href = 'http://localhost:3000/'
+            window.location.href = 'http://localhost:3000/edit_list_autor'
         })
       })
   </script>

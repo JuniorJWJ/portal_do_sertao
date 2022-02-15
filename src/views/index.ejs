@@ -20,16 +20,9 @@
               <%= obra.autor %>
               <br>
         <% })%>
+        <div id="testediv">
+            <h3>fala meu amigo davy</h3>
+        </div>
         <h2><a href="https://docs.google.com/forms/d/e/1FAIpQLSfFw5MwhpNudp8t0zQ_O4IxSECSOBS1iJ7u9L8BnFMfekJCyA/viewform">Quer fazer parte bla bla bla, n sei qual texto por aqui, clique aqui</a> </h2>
   </body>
-  <script>
-      const token = localStorage.getItem('portal@token');
-      axios.get('/teste', { 
-            headers: {
-                  authorization: `bearer ${token}`
-            }
-      }).then(function(response) {
-            console.log(response.data)
-      })
-  </script>
 </html>

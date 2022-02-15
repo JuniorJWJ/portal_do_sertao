@@ -1,4 +1,6 @@
 const User = require('../model/user')
+const Autor = require('../model/autor')
+const Cidade = require('../model/cidade')
 const { eAdmin } = require('../../middlewares/auth');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -43,7 +45,7 @@ module.exports = {
     var token = jwt.sign({id: user.id}, "D62ST92Y7A6V7K5C6W9ZU6W8KS3", {
         //expiresIn: 600 //10 min
         //expiresIn: 60 //1 min
-        expiresIn: '7d' // 7 dia
+        expiresIn: '30m' // 7 dia
     });
     return res.json({
         erro: false,
@@ -74,4 +76,10 @@ module.exports = {
 
     return res.render("logUser")
   },
+  async get_editListaAutor(req, res){
+    const autor = await Autor.get()
+    const cidade = await Cidade.get()
+
+    return res.render("editListaAutor", {autor: autor, cidade: cidade})
+  }
 }
