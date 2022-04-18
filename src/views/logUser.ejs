@@ -1,4 +1,4 @@
-<html lang="pt-BR">
+<html lang="pt-BR" id="idtelalogin">
     <head>
       <meta charset="UTF-8" />
       <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -26,14 +26,26 @@
         </form>
   </body>
   <script>
-      const form = document.querySelector("form")
-      form.addEventListener('submit', (event) => {
+        //const idlogin = document.querySelector("#idtelalogin")
+        const form = document.querySelector("form")
+        form.addEventListener('submit', (event) => {
         event.preventDefault()
         const email = document.querySelector("#login")
         const password = document.querySelector("#password")
         axios.post('/log_user', { email: email.value, password: password.value}).then((response) => {
             localStorage.setItem('portal@token', response.data.token)
-            window.location.href = 'http://localhost:3000/edit_list_autor'
+            //axios.get('/edit_list_autor', { 
+            //headers: {
+            //    'authorization' : `Bearer ${response.data.token}`
+            //}
+            //}).then(function(response) {
+                //idlogin.innerHTML = response.data
+                //console.log(response.data) 
+                //return response.redirect('/edit_list_autor')
+                //console.log("Oi")
+
+            //})
+            setTimeout(() => {window.location.href = 'http://localhost:3000/edit_list_autor'} , 1000);
         })
       })
   </script>

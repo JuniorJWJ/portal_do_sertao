@@ -6,7 +6,8 @@ module.exports = {
     const autor = await Autor.get()
     const cidade = await Cidade.get()
 
-    return res.render("listaAutor", {autor: autor, cidade: cidade})
+    //return res.render("listaAutor", {autor: autor, cidade: cidade})
+    return res.json({autor: autor, cidade: cidade})
   },
   async create_autor_get(req,res){
     const autor = await Autor.get()
@@ -15,7 +16,20 @@ module.exports = {
     return res.render("createAutor", {autor: autor, cidade: cidade})
   },
   async create(req, res) {
-    await Autor.create({
+
+    // await Autor.create({
+    //   nome: req.body.nome,
+    //   profissao: req.body.profissao,
+    //   biografia: req.body.biografia,
+    //   email: req.body.email,
+    //   id_cidade: req.body.select_cidade,
+    //   genero: req.body.select_genero,        
+    //   endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : '' 
+    // })
+
+    //return res.redirect('/lista_autor')
+
+    const autor = ({
       nome: req.body.nome,
       profissao: req.body.profissao,
       biografia: req.body.biografia,
@@ -24,14 +38,25 @@ module.exports = {
       genero: req.body.select_genero,        
       endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : '' 
     })
-    return res.redirect('/lista_autor')
+    try{
+      await Autor.create(autor)
+      res.status(201).json({msg: 'User created sucessfully', autor})
+    } catch (error) {
+      res.status(500).json({msg: 'Fail in Server '})
+    }
   },
   async delete(req, res) {
     const autorId = req.params.id
   
-    Autor.delete(autorId)
+    // Autor.delete(autorId)
   
-    return res.redirect('/lista_autor')
+    // return res.redirect('/lista_autor')
+    try{
+      await Autor.delete(autorId)
+      res.status(201).json({msg: 'Autor deleted successfully'})
+    } catch (error) {
+      res.status(500).json({msg: 'Fail in delete Autor'})
+    }
   },
   async update(req, res) {
     const autorId = req.params.id

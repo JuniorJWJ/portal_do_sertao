@@ -79,7 +79,8 @@ module.exports = {
   async get_editListaAutor(req, res){
     const autor = await Autor.get()
     const cidade = await Cidade.get()
-
+    
     return res.render("editListaAutor", {autor: autor, cidade: cidade})
+    //return res.render("editListaAutor", {autor: autor, cidade: cidade})
   }
 }
