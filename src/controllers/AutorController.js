@@ -7,6 +7,7 @@ module.exports = {
     const cidade = await Cidade.get()
 
     //return res.render("listaAutor", {autor: autor, cidade: cidade})
+    //return res.json({autor: autor, cidade: cidade})
     return res.json({autor: autor, cidade: cidade})
   },
   async create_autor_get(req,res){
@@ -34,14 +35,15 @@ module.exports = {
       profissao: req.body.profissao,
       biografia: req.body.biografia,
       email: req.body.email,
-      id_cidade: req.body.select_cidade,
-      genero: req.body.select_genero,        
+      id_cidade: req.body.id_cidade,
+      genero: req.body.genero,        
       endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : '' 
     })
     try{
       await Autor.create(autor)
       res.status(201).json({msg: 'User created sucessfully', autor})
     } catch (error) {
+      console.log(error)
       res.status(500).json({msg: 'Fail in Server '})
     }
   },
@@ -53,7 +55,7 @@ module.exports = {
     // return res.redirect('/lista_autor')
     try{
       await Autor.delete(autorId)
-      res.status(201).json({msg: 'Autor deleted successfully'})
+      res.status(200).json({msg: 'Autor deleted successfully'})
     } catch (error) {
       res.status(500).json({msg: 'Fail in delete Autor'})
     }
@@ -66,8 +68,8 @@ module.exports = {
       profissao: req.body.profissao,
       biografia: req.body.biografia,        
       email: req.body.email,
-      id_cidade: req.body.select_cidade,
-      genero: req.body.select_genero,  
+      id_cidade: req.body.id_cidade,
+      genero: req.body.genero,  
       endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : ''
     }
     if(!updatedAutor.endereco_foto){
@@ -75,9 +77,16 @@ module.exports = {
       updatedAutor.endereco_foto = AutorBDteste[0].endereco_foto
     }
     console.log(updatedAutor,"id = "+ autorId)
-    await Autor.update(updatedAutor, autorId)
+    
+    try{
+      await Autor.update(updatedAutor, autorId)
+      res.status(201).json({msg: 'Author update sucessfully'})
+    } catch (error) {
+      // res.status(500).json({msg: 'Fail in Server '})
+      console.log(error)
+    }
 
-    res.redirect('/lista_autor')
+    // res.redirect('/lista_autor')
   },
   //exibir o que vai ser editado
   async show_edit(req,res){
@@ -88,7 +97,7 @@ module.exports = {
     const cidade = await Cidade.get()
 
 
-    return res.render("autorEdit", {autor: autor, cidade: cidade})
+    // return res.render("autorEdit", {autor: autor, cidade: cidade})
   },
   //exibir o que vai ser editado
   async show(req,res){
@@ -96,9 +105,11 @@ module.exports = {
 
     const autor = await Autor.show(autorId)
     const id_cidade = autor.map(autor => autor.id_cidade)
-    console.log(id_cidade)
+    // console.log(id_cidade)
     const cidade = await Cidade.show(id_cidade)
 
-    return res.render("Autor", {autor: autor, cidade: cidade})
+    // return res.render("Autor", {autor: autor, cidade: cidade})
+    //return res.json({autor: autor, cidade: cidade})
+    return res.json({autor: autor})
   }
 }

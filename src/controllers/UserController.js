@@ -30,7 +30,8 @@ module.exports = {
     const user = await User.show(userEmail)
     console.log(req.body)
     console.log(user)
-    if(user === null){
+    if(user == null || user.length === 0){
+        console.log("entrou")
         return res.status(400).json({
             erro: true,
             mensagem: "Erro: Usuário ou a senha incorreta! Nenhum usuário com este e-mail"

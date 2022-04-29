@@ -9,7 +9,8 @@ module.exports = {
     const generoLiterario = await GeneroLiterario.get()
 
     // return res.render("listaObra", {obra: obra, autor: autor, generoLiterario: generoLiterario})
-    return res.json({obra: obra, autor: autor, generoLiterario: generoLiterario})
+    // return res.json({obra: obra, autor: autor, generoLiterario: generoLiterario})
+    return res.json({obra: obra})
   },
   async create_obra_get(req,res){
     const obra = await Obra.get()
@@ -68,9 +69,13 @@ module.exports = {
     const obraId = req.params.id
 
     const obra = await Obra.show(obraId)
+    console.log(obra)
     const id_genero_literario = obra.map(obra => obra.id_genero_literario)
+    console.log(id_genero_literario)
     const id_autor = obra.map(obra => obra.id_autor)
+    console.log(id_autor)
     const generoLiterario = await GeneroLiterario.show(id_genero_literario)
+    console.log(generoLiterario)
     const autor = await Autor.show(id_autor)
 
     //return res.render("Obra", {obra: obra, autor: autor, generoLiterario: generoLiterario})
