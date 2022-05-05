@@ -5,7 +5,7 @@ const obraController = require('./controllers/ObraController');
 const generoLiterarioController = require('./controllers/generoLiterarioController');
 const sobreController = require('./controllers/sobreController');
 const userController = require('./controllers/userController');
-const cidadeController = require('./controllers/cidadeController');
+const cidadeController = require('./controllers/cidadeController'); 
 
 
 const { eAdmin } = require('../middlewares/auth');
@@ -31,8 +31,8 @@ route.get('/lista_obra', obraController.get)
 route.get('/create_obra', obraController.create_obra_get)
 route.get('/lista_obra/genero/:id', obraController.show_genero)
 route.post('/create_obra',multer(multerConfig).single("file"), obraController.create)
-route.post('/obra/delete/:id', obraController.delete)
-route.put('/obra/edit/:id', obraController.show_edit)
+route.delete('/obra/delete/:id', obraController.delete)
+route.get('/obra/edit/:id', obraController.show_edit)
 route.get('/obra/:id', obraController.show)
 route.put('/obra/update/:id',multer(multerConfig).single("file"), obraController.update)
 //user
@@ -44,5 +44,7 @@ route.get('/log_user', userController.log_user_get)
 route.get('/edit_list_autor', eAdmin, userController.get_editListaAutor)
 //cidade
 route.get('/lista_cidade', cidadeController.get)
+//
+route.get('/lista_generos_literarios', generoLiterarioController.get)
 
 module.exports = route;

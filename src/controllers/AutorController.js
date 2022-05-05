@@ -17,19 +17,6 @@ module.exports = {
     return res.render("createAutor", {autor: autor, cidade: cidade})
   },
   async create(req, res) {
-
-    // await Autor.create({
-    //   nome: req.body.nome,
-    //   profissao: req.body.profissao,
-    //   biografia: req.body.biografia,
-    //   email: req.body.email,
-    //   id_cidade: req.body.select_cidade,
-    //   genero: req.body.select_genero,        
-    //   endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : '' 
-    // })
-
-    //return res.redirect('/lista_autor')
-
     const autor = ({
       nome: req.body.nome,
       profissao: req.body.profissao,

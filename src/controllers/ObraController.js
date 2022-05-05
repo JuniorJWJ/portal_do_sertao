@@ -21,20 +21,29 @@ module.exports = {
     return res.json({obra: obra, autor: autor, generoLiterario: generoLiterario})
   },
   async create(req, res) {
-    await Obra.create({
+    const obra = ({
       nome: req.body.nome,
       id_autor: req.body.select_autor,
       id_genero_literario: req.body.select_genero_literario,      
       endereco_pdf: req.file ? `http://localhost:3000/pdf/${req.file.filename}` : '' 
     })
-    //return res.redirect('/lista_obra')
+    try{
+      await Obra.create(obra)
+      res.status(201).json({msg: 'Obra created sucessfully', obra})
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({msg: 'Fail in Server '})
+    }
   },
   async delete(req, res) {
     const obraId = req.params.id
-  
-    Obra.delete(obraId)
-  
-    //return res.redirect('/lista_obra')
+
+    try{
+      await Obra.delete(obraId)
+      res.status(200).json({msg: 'Obra deleted successfully'})
+    } catch (error) {
+      res.status(500).json({msg: 'Fail in delete Autor'})
+    }
   },
   async update(req, res) {
     const obraId = req.params.id
@@ -50,9 +59,16 @@ module.exports = {
       updatedObra.endereco_pdf = ObraBDteste[0].endereco_pdf
     }
     //console.log("update: ", updatedObra)
-    await Obra.update(updatedObra, obraId)
-
+    // await Obra.update(updatedObra, obraId)
+    
     //res.redirect('/lista_obra')
+    try{
+      await Obra.update(updatedObra, obraId)
+      res.status(201).json({msg: 'Obra update sucessfully'})
+    } catch (error) {
+      res.status(500).json({msg: 'Fail in Server '})
+      console.log(error)
+    }
   },
   //exibir o que vai ser editado
   async show_edit(req,res){
@@ -67,7 +83,7 @@ module.exports = {
   },
   async show(req,res){
     const obraId = req.params.id
-
+    console.log(obraId)
     const obra = await Obra.show(obraId)
     console.log(obra)
     const id_genero_literario = obra.map(obra => obra.id_genero_literario)
@@ -79,7 +95,8 @@ module.exports = {
     const autor = await Autor.show(id_autor)
 
     //return res.render("Obra", {obra: obra, autor: autor, generoLiterario: generoLiterario})
-    return res.json({obra: obra, autor: autor, generoLiterario: generoLiterario})
+    // return res.json({obra: obra, autor: autor, generoLiterario: generoLiterario})
+    return res.json({obra: obra})
   },
   async show_genero(req,res){
     const obraGenero = req.params.id
@@ -90,6 +107,7 @@ module.exports = {
     const generoLiterario = await GeneroLiterario.get()
 
     //return res.render("FiltroObra", {obra: obra, autor: autor, generoLiterario: generoLiterario})
-    return res.json({obra: obra, autor: autor, generoLiterario: generoLiterario})
+    // return res.json({obra: obra, autor: autor, generoLiterario: generoLiterario})
+    return res.json({obra: obra})
   }
 }

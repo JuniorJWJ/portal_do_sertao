@@ -53,7 +53,7 @@ module.exports = {
     },
     async update(updatedObra, obraId) {
         const db = await Database()
-        
+        console.log("dentro do model :", updatedObra)
 
         await db.run(`UPDATE obra SET
         nome = "${updatedObra.nome}",
