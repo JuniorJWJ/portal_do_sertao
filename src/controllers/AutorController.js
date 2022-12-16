@@ -98,5 +98,17 @@ module.exports = {
     // return res.render("Autor", {autor: autor, cidade: cidade})
     //return res.json({autor: autor, cidade: cidade})
     return res.json({autor: autor})
+  },
+  async show_cidade(req,res){
+    const autorCidade = req.params.id
+    console.log(autorCidade)
+    const autor = await Autor.show_cidade(autorCidade)
+    console.log(autor)
+    // const autor = await Autor.get()
+    // const generoLiterario = await GeneroLiterario.get()
+
+    //return res.render("FiltroObra", {obra: obra, autor: autor, generoLiterario: generoLiterario})
+    // return res.json({obra: obra, autor: autor, generoLiterario: generoLiterario})
+    return res.json({autor: autor})
   }
 }

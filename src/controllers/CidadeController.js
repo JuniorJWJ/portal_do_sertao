@@ -6,5 +6,12 @@ module.exports = {
 
       //return res.render("index", {cidade: cidade})
       return res.json({cidade: cidade})
+    },
+    async show(req,res){
+      const cidadeId = req.params.id
+      const cidade = await Cidade.show(cidadeId)
+
+      //return res.render("index", {cidade: cidade})
+      return res.json({cidade: cidade})
     }
 }

@@ -80,4 +80,22 @@ module.exports = {
             id_cidade: autor.id_cidade
         }))
     },
+    async show_cidade(idCidade){
+        const db = await Database()
+        console.log(idCidade)
+        const data = await db.all(`SELECT * FROM autor WHERE id_cidade = ${idCidade} `)
+
+        await db.close()
+
+        return data.map( autor =>({ 
+            id: autor.id,
+            nome: autor.nome,
+            profissao: autor.profissao,
+            biografia: autor.biografia,
+            email: autor.email,
+            endereco_foto: autor.endereco_foto,
+            genero: autor.genero,
+            id_cidade: autor.id_cidade
+        }))
+    },
 }
