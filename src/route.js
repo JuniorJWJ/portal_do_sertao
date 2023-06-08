@@ -43,7 +43,9 @@ route.delete("/autor/delete/", autorController.delete);
 //Obra
 route.get("/lista_obra", obraController.get);
 route.get("/lista_obra/genero/:id", obraController.show_genero);
+route.get("/lista_obra/genero/", obraController.show_genero);
 route.get("/obra/:id", obraController.show);
+route.get("/obra/", obraController.show);
 route.post(
   "/create_obra",
   multer(multerConfig).single("file"),
@@ -54,7 +56,13 @@ route.put(
   multer(multerConfig).single("file"),
   obraController.update
 );
+route.put(
+  "/obra/update/",
+  multer(multerConfig).single("file"),
+  obraController.update
+);
 route.delete("/obra/delete/:id", obraController.delete);
+route.delete("/obra/delete/", obraController.delete);
 //User
 route.get("/teste", eAdmin, userController.show_users);
 route.get("/create_user", userController.create_user_get);

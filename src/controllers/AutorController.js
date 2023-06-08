@@ -105,7 +105,7 @@ module.exports = {
       if (autor.length === 0) {
         return res.status(400).json({
           erro: true,
-          mensagem: "Nenhum usuário encontrado!",
+          mensagem: "Nenhum autor encontrado!",
         });
       }
 
