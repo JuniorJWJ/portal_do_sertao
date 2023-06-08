@@ -1,114 +1,199 @@
-const Autor = require('../model/autor')
-const Cidade = require('../model/cidade')
+const Autor = require("../model/autor");
+const Cidade = require("../model/cidade");
 
 module.exports = {
-  async get(req,res){
-    const autor = await Autor.get()
-    const cidade = await Cidade.get()
-
-    //return res.render("listaAutor", {autor: autor, cidade: cidade})
-    //return res.json({autor: autor, cidade: cidade})
-    return res.json({autor: autor, cidade: cidade})
-  },
-  async create_autor_get(req,res){
-    const autor = await Autor.get()
-    const cidade = await Cidade.get()
-
-    return res.render("createAutor", {autor: autor, cidade: cidade})
+  async get(req, res) {
+    const autor = await Autor.get();
+    const cidade = await Cidade.get();
+    return res.json({ autor: autor, cidade: cidade });
   },
   async create(req, res) {
-    const autor = ({
+    if (
+      req.body.nome == "" ||
+      req.body.profissao == "" ||
+      req.body.biografia == "" ||
+      req.body.email == "" ||
+      req.body.id_cidade == "" ||
+      req.body.genero == "" ||
+      req.file == ""
+    ) {
+      return res
+        .status(500)
+        .json({ msg: "Preencha todos os dados para completar o cadastro" });
+    }
+    const autor = {
       nome: req.body.nome,
       profissao: req.body.profissao,
       biografia: req.body.biografia,
       email: req.body.email,
       id_cidade: req.body.id_cidade,
-      genero: req.body.genero,        
-      endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : '' 
-    })
-    try{
-      await Autor.create(autor)
-      res.status(201).json({msg: 'User created sucessfully', autor})
+      genero: req.body.genero,
+      endereco_foto: req.file
+        ? `http://localhost:3000/images/${req.file.filename}`
+        : "",
+    };
+    const existAutor = await Autor.show_email(autor.email);
+
+    if (existAutor) {
+      return res.status(200).json({
+        erro: false,
+        mensagem: "Já existe um autor com esse email!",
+      });
+    }
+    try {
+      await Autor.create(autor);
+      res.status(201).json({ msg: "Autor registrado com sucesso!", autor });
     } catch (error) {
-      console.log(error)
-      res.status(500).json({msg: 'Fail in Server '})
+      console.log(error);
+      res.status(500).json({ msg: "Erro ao registrar o autor no sistema!" });
     }
   },
   async delete(req, res) {
-    const autorId = req.params.id
-  
-    // Autor.delete(autorId)
-  
-    // return res.redirect('/lista_autor')
-    try{
-      await Autor.delete(autorId)
-      res.status(200).json({msg: 'Autor deleted successfully'})
+    const autorId = req.params.id;
+
+    if (autorId === "" || autorId == undefined) {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Insira um ID correto!",
+      });
+    }
+
+    try {
+      const autor = await Autor.show(autorId);
+      console.log(autor);
+
+      if (autor.length === 0) {
+        return res.status(400).json({
+          erro: true,
+          mensagem: "Nenhum autor encontrado!",
+        });
+      }
+
+      await Autor.delete(autorId);
+      res.status(200).json({ msg: "Autor deletado com sucesso" });
     } catch (error) {
-      res.status(500).json({msg: 'Fail in delete Autor'})
+      res.status(500).json({ msg: "Falha ao deletar o autor" });
     }
   },
   async update(req, res) {
-    const autorId = req.params.id
+    const autorId = req.params.id;
+    console.log(autorId);
 
-    var updatedAutor = {
+    const updatedAutor = {
       nome: req.body.nome,
       profissao: req.body.profissao,
-      biografia: req.body.biografia,        
+      biografia: req.body.biografia,
       email: req.body.email,
       id_cidade: req.body.id_cidade,
-      genero: req.body.genero,  
-      endereco_foto: req.file ? `http://localhost:3000/images/${req.file.filename}` : ''
+      genero: req.body.genero,
+      endereco_foto: req.file
+        ? `http://localhost:3000/images/${req.file.filename}`
+        : "",
+    };
+
+    if (autorId === "" || autorId == undefined) {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Insira um ID correto!",
+      });
     }
-    if(!updatedAutor.endereco_foto){
-      var AutorBDteste = await Autor.show(autorId)
-      updatedAutor.endereco_foto = AutorBDteste[0].endereco_foto
-    }
-    console.log(updatedAutor,"id = "+ autorId)
-    
-    try{
-      await Autor.update(updatedAutor, autorId)
-      res.status(201).json({msg: 'Author update sucessfully'})
+
+    try {
+      const autor = await Autor.show(autorId);
+      console.log(autor);
+
+      if (autor.length === 0) {
+        return res.status(400).json({
+          erro: true,
+          mensagem: "Nenhum usuário encontrado!",
+        });
+      }
+
+      if (!updatedAutor.endereco_foto) {
+        const AutorBDteste = await Autor.show(autorId);
+        updatedAutor.endereco_foto = AutorBDteste[0].endereco_foto;
+      }
+
+      console.log(updatedAutor, "id = " + autorId);
+
+      try {
+        await Autor.update(updatedAutor, autorId);
+        res.status(201).json({ msg: "Autor atualizado com sucesso!" });
+      } catch (error) {
+        return res.status(400).json({
+          erro: true,
+          mensagem: "Erro ao buscar autor!",
+        });
+      }
     } catch (error) {
-      // res.status(500).json({msg: 'Fail in Server '})
-      console.log(error)
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Erro ao buscar autor!",
+      });
     }
-
-    // res.redirect('/lista_autor')
   },
-  //exibir o que vai ser editado
-  async show_edit(req,res){
-    const autorId = req.params.id
+  async show(req, res) {
+    const autorID = req.params.id;
+    if (autorID === "" || autorID == undefined) {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Insira um ID correto!",
+      });
+    }
+    try {
+      const autor = await Autor.show(autorID);
+      console.log(autor);
 
-    const autor = await Autor.show(autorId)
-    
-    const cidade = await Cidade.get()
+      if (autor.length == 0) {
+        return res.status(400).json({
+          erro: true,
+          mensagem: "Nenhum autor encontrado!",
+        });
+      }
 
-
-    // return res.render("autorEdit", {autor: autor, cidade: cidade})
+      if (autor) {
+        return res.status(200).json({
+          erro: false,
+          autor,
+        });
+      }
+    } catch (error) {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Erro ao buscar autor!",
+      });
+    }
   },
-  //exibir o que vai ser editado
-  async show(req,res){
-    const autorId = req.params.id
+  async show_cidade(req, res) {
+    const autorCidade = req.params.id;
+    if (autorCidade === "" || autorCidade == undefined) {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Insira um ID correto!",
+      });
+    }
+    try {
+      const autor = await Autor.show_cidade(autorCidade);
+      console.log(autor);
 
-    const autor = await Autor.show(autorId)
-    const id_cidade = autor.map(autor => autor.id_cidade)
-    // console.log(id_cidade)
-    const cidade = await Cidade.show(id_cidade)
+      if (autor.length == 0) {
+        return res.status(400).json({
+          erro: true,
+          mensagem: "Nenhum autor encontrado!",
+        });
+      }
 
-    // return res.render("Autor", {autor: autor, cidade: cidade})
-    //return res.json({autor: autor, cidade: cidade})
-    return res.json({autor: autor})
+      if (autor) {
+        return res.status(200).json({
+          erro: false,
+          autor,
+        });
+      }
+    } catch (error) {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Erro ao buscar autor!",
+      });
+    }
   },
-  async show_cidade(req,res){
-    const autorCidade = req.params.id
-    console.log(autorCidade)
-    const autor = await Autor.show_cidade(autorCidade)
-    console.log(autor)
-    // const autor = await Autor.get()
-    // const generoLiterario = await GeneroLiterario.get()
-
-    //return res.render("FiltroObra", {obra: obra, autor: autor, generoLiterario: generoLiterario})
-    // return res.json({obra: obra, autor: autor, generoLiterario: generoLiterario})
-    return res.json({autor: autor})
-  }
-}
+};
