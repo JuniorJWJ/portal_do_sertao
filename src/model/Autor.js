@@ -1,4 +1,5 @@
 const Database = require("../db/config");
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = {
   async get() {
@@ -11,25 +12,35 @@ module.exports = {
   },
   async create(newAutor) {
     //console.log(newAutor)
+    console.log(newAutor.password);
+    const id = uuidv4();
     try {
       const db = await Database();
-
+      console.log(id);
       await db.run(`INSERT INTO autor (
+                id,
                 nome,
                 profissao,
                 biografia,
                 email,
                 endereco_foto,
                 genero,
-                id_cidade
+                id_cidade,
+                password,
+                adm,
+                pendente
             ) VALUES (
+                "${id}",
                 "${newAutor.nome}",
                 "${newAutor.profissao}",
                 "${newAutor.biografia}",
                 "${newAutor.email || ""}",
                 "${newAutor.endereco_foto || ""}",
                 "${newAutor.genero}",
-                "${newAutor.id_cidade}"
+                "${newAutor.id_cidade}",
+                "${newAutor.password}",
+                "0", 
+                "0"
             )`);
 
       await db.close();
@@ -118,6 +129,8 @@ module.exports = {
         endereco_foto: autor.endereco_foto,
         genero: autor.genero,
         id_cidade: autor.id_cidade,
+        password: autor.password,
+        adm: autor.adm,
       }));
     }
   },

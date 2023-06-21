@@ -1,5 +1,7 @@
-const Autor = require("../model/autor");
+const Autor = require("../model/Autor");
 const Cidade = require("../model/cidade");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 module.exports = {
   async get(req, res) {
@@ -15,6 +17,7 @@ module.exports = {
       req.body.email == "" ||
       req.body.id_cidade == "" ||
       req.body.genero == "" ||
+      req.body.password == "" ||
       req.file == ""
     ) {
       return res
@@ -28,6 +31,7 @@ module.exports = {
       email: req.body.email,
       id_cidade: req.body.id_cidade,
       genero: req.body.genero,
+      password: await bcrypt.hash(req.body.password, 8),
       endereco_foto: req.file
         ? `http://localhost:3000/images/${req.file.filename}`
         : "",
@@ -40,9 +44,10 @@ module.exports = {
         mensagem: "Já existe um autor com esse email!",
       });
     }
+
     try {
       await Autor.create(autor);
-      res.status(201).json({ msg: "Autor registrado com sucesso!", autor });
+      res.status(201).json({ msg: "Autor registrado com sucesso!" });
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: "Erro ao registrar o autor no sistema!" });
@@ -60,7 +65,7 @@ module.exports = {
 
     try {
       const autor = await Autor.show(autorId);
-      console.log(autor);
+      // console.log(autor);
 
       if (autor.length === 0) {
         return res.status(400).json({
@@ -77,7 +82,7 @@ module.exports = {
   },
   async update(req, res) {
     const autorId = req.params.id;
-    console.log(autorId);
+    // console.log(autorId);
 
     const updatedAutor = {
       nome: req.body.nome,
@@ -100,7 +105,7 @@ module.exports = {
 
     try {
       const autor = await Autor.show(autorId);
-      console.log(autor);
+      // console.log(autor);
 
       if (autor.length === 0) {
         return res.status(400).json({
@@ -114,7 +119,7 @@ module.exports = {
         updatedAutor.endereco_foto = AutorBDteste[0].endereco_foto;
       }
 
-      console.log(updatedAutor, "id = " + autorId);
+      // console.log(updatedAutor, "id = " + autorId);
 
       try {
         await Autor.update(updatedAutor, autorId);
@@ -142,7 +147,7 @@ module.exports = {
     }
     try {
       const autor = await Autor.show(autorID);
-      console.log(autor);
+      // console.log(autor);
 
       if (autor.length == 0) {
         return res.status(400).json({
@@ -174,7 +179,7 @@ module.exports = {
     }
     try {
       const autor = await Autor.show_cidade(autorCidade);
-      console.log(autor);
+      // console.log(autor);
 
       if (autor.length == 0) {
         return res.status(400).json({
@@ -195,5 +200,42 @@ module.exports = {
         mensagem: "Erro ao buscar autor!",
       });
     }
+  },
+  async log_user(req, res) {
+    if (!req.body.email) {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Erro: Insira um Email válido!",
+      });
+    }
+    const userEmail = req.body.email;
+    const user = await Autor.show_email(userEmail);
+    // console.log(req.body);
+    // console.log(user);
+    if (user == null || user.length === 0) {
+      // console.log("entrou");
+      return res.status(400).json({
+        erro: true,
+        mensagem:
+          "Erro: Usuário ou a senha incorreta! Nenhum usuário com este e-mail",
+      });
+    }
+
+    if (!(await bcrypt.compare(req.body.password, user[0].password))) {
+      return res.status(400).json({
+        erro: true,
+        mensagem: "Erro: Usuário ou a senha incorreta! Senha incorreta!",
+      });
+    }
+    var token = jwt.sign({ id: user.id }, "D62ST92Y7A6V7K5C6W9ZU6W8KS3", {
+      expiresIn: "30m", // 7 dia
+    });
+    return res.json({
+      erro: false,
+      mensagem: "Login realizado com sucesso!",
+      token,
+      id: user[0].id,
+      adm: user[0].adm,
+    });
   },
 };

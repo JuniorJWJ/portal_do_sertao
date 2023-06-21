@@ -4,7 +4,7 @@ const autorController = require("./controllers/AutorController");
 const obraController = require("./controllers/ObraController");
 const generoLiterarioController = require("./controllers/generoLiterarioController");
 const sobreController = require("./controllers/sobreController");
-const userController = require("./controllers/userController");
+// const userController = require("./controllers/userController");
 const cidadeController = require("./controllers/cidadeController");
 
 const { eAdmin } = require("../middlewares/auth");
@@ -40,6 +40,8 @@ route.put(
 );
 route.delete("/autor/delete/:id", autorController.delete);
 route.delete("/autor/delete/", autorController.delete);
+
+route.post("/autor/log", autorController.log_user);
 //Obra
 route.get("/lista_obra", obraController.get);
 route.get("/lista_obra/genero/:id", obraController.show_genero);
@@ -64,12 +66,12 @@ route.put(
 route.delete("/obra/delete/:id", obraController.delete);
 route.delete("/obra/delete/", obraController.delete);
 //User
-route.get("/teste", eAdmin, userController.show_users);
-route.get("/create_user", userController.create_user_get);
-route.get("/log_user", userController.log_user_get);
-route.get("/edit_list_autor", eAdmin, userController.get_editListaAutor);
-route.post("/create_user", userController.create);
-route.post("/log_user", userController.log_user);
+// route.get("/teste", eAdmin, userController.show_users);
+// route.get("/create_user", userController.create_user_get);
+// route.get("/log_user", userController.log_user_get);
+// route.get("/edit_list_autor", eAdmin, userController.get_editListaAutor);
+// route.post("/create_user", userController.create);
+// route.post("/log_user", userController.log_user);
 //Cidade
 route.get("/lista_cidade", cidadeController.get);
 route.get("/cidade/:id", cidadeController.show);

@@ -9,21 +9,6 @@ module.exports = {
   },
 
   async create(req, res) {
-    // const obra = {
-    //   nome: req.body.nome,
-    //   id_autor: req.body.select_autor,
-    //   id_genero_literario: req.body.select_genero_literario,
-    //   endereco_pdf: req.file
-    //     ? `http://localhost:3000/pdf/${req.file.filename}`
-    //     : "",
-    // };
-    // try {
-    //   await Obra.create(obra);
-    //   res.status(201).json({ msg: "Obra created sucessfully", obra });
-    // } catch (error) {
-    //   console.log(error);
-    //   res.status(500).json({ msg: "Fail in Server " });
-    // }
     if (
       req.body.nome == "" ||
       req.body.select_autor == "" ||
