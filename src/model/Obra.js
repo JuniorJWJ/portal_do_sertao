@@ -73,7 +73,8 @@ module.exports = {
         nome = "${updatedObra.nome}",
         id_autor = "${updatedObra.id_autor}",
         endereco_pdf = "${updatedObra.endereco_pdf}",
-        id_genero_literario = "${updatedObra.id_genero_literario}"
+        id_genero_literario = "${updatedObra.id_genero_literario}",
+        aprovado = 0
         WHERE id = "${obraId}"
       `);
 
@@ -82,9 +83,13 @@ module.exports = {
   async approv(obraId) {
     const db = await Database();
     console.log('dentro do approv:', obraId);
-    await db.run(`UPDATE obra SET
-            aprovado = 1
-            WHERE id = "${obraId}"
+    await db.run(`UPDATE obra 
+                  SET aprovado = CASE 
+                        WHEN aprovado = 0 THEN 1 
+                        ELSE 0 
+                    END 
+                  WHERE id = "${obraId}";
+    
           `);
 
     await db.close();
