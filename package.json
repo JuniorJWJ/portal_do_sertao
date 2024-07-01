@@ -12,21 +12,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.25.0",
-    "bcrypt": "^5.0.1",
+    "axios": "^1.7.2",
+    "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "ejs": "^3.1.6",
-    "express": "^4.17.1",
-    "jsonwebtoken": "^9.0.1",
-    "multer": "^1.4.3",
-    "sqlite": "^4.0.23",
-    "sqlite3": "^5.0.2",
-    "uuid": "^9.0.0",
-    "yarn": "^1.22.19"
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "uuid": "^10.0.0",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
-    "nodemon": "^2.0.12",
-    "prettier": "^3.0.0"
+    "nodemon": "^3.1.4",
+    "prettier": "^3.3.2"
   }
 }
