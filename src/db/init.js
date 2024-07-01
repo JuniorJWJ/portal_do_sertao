@@ -4,7 +4,7 @@ const initDb = {
   async init() {
     const db = await Database();
 
-    await db.exec(`CREATE TABLE autor (
+    await db.exec(`CREATE TABLE IF NOT EXISTS autor (
         id VARCHAR PRIMARY KEY,
         nome VARCHAR,
         profissao VARCHAR,
@@ -19,7 +19,7 @@ const initDb = {
         FOREIGN KEY (id_cidade) REFERENCES cidade(id)
     )`);
 
-    await db.exec(`CREATE TABLE obra (
+    await db.exec(`CREATE TABLE IF NOT EXISTS obra (
         id VARCHAR PRIMARY KEY,
         nome VARCHAR,
         endereco_pdf VARCHAR,
@@ -30,12 +30,12 @@ const initDb = {
         FOREIGN KEY (id_autor) REFERENCES autor(id)
     )`);
 
-    await db.exec(`CREATE TABLE cidade (
+    await db.exec(`CREATE TABLE IF NOT EXISTS cidade (
         id INTEGER PRIMARY KEY,
         nome VARCHAR
     )`);
 
-    await db.exec(`CREATE TABLE generoLiterario (
+    await db.exec(`CREATE TABLE IF NOT EXISTS generoLiterario (
         id INTEGER PRIMARY KEY,
         nome VARCHAR
     )`);
