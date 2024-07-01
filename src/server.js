@@ -1,3 +1,5 @@
+require('./db/init.js')
+
 const express = require('express');
 const server = express();
 const route = require('./route');
