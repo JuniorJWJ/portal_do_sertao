@@ -2,10 +2,10 @@ const express = require('express');
 const indexController = require('./controllers/IndexController');
 const autorController = require('./controllers/AutorController');
 const obraController = require('./controllers/ObraController');
-const generoLiterarioController = require('./controllers/generoLiterarioController');
-const sobreController = require('./controllers/sobreController');
+const generoLiterarioController = require('./controllers/GeneroLiterarioController');
+const sobreController = require('./controllers/SobreController');
 // const userController = require("./controllers/userController");
-const cidadeController = require('./controllers/cidadeController');
+const cidadeController = require('./controllers/CidadeController');
 
 const { eAdmin } = require('../middlewares/auth');
 
