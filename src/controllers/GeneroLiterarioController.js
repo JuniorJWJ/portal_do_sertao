@@ -1,4 +1,4 @@
-const GeneroLiterario = require('../model/generoLiterario');
+const GeneroLiterario = require('../model/GeneroLiterario');
 
 module.exports = {
   async get(req, res) {

@@ -1,6 +1,6 @@
-const Obra = require('../model/obra');
-const Autor = require('../model/autor');
-const GeneroLiterario = require('../model/generoLiterario');
+const Obra = require('../model/Obra');
+const Autor = require('../model/Autor');
+const GeneroLiterario = require('../model/GeneroLiterario');
 
 module.exports = {
   async get(req, res) {

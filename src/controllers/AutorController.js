@@ -1,5 +1,5 @@
-const Autor = require('../model/autor');
-const Cidade = require('../model/cidade');
+const Autor = require('../model/Autor');
+const Cidade = require('../model/Cidade');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 

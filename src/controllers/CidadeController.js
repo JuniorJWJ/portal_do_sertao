@@ -1,4 +1,4 @@
-const Cidade = require('../model/cidade');
+const Cidade = require('../model/Cidade');
 
 module.exports = {
   async get(req, res) {
