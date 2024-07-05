@@ -1,25 +1,25 @@
-const Database = require('../db/config');
+const db = require('../db/config');
 
 module.exports = {
   async get() {
-    const db = await Database();
-    const data = await db.all(`SELECT * FROM cidade `);
-
-    await db.close();
-
-    // console.log("dentro do model :" + data)
-    return data.map((cidade) => cidade);
+    try {
+      const res = await db.query('SELECT * FROM cidade');
+      return res.rows;
+    } catch (err) {
+      console.error('Error executing query', err.stack);
+      throw err;
+    }
   },
   async show(cidadeId) {
-    const db = await Database();
-
-    const data = await db.all(`SELECT * FROM cidade WHERE id = ${cidadeId} `);
-
-    await db.close();
-
-    return data.map((cidade) => ({
-      id: cidade.id,
-      nome: cidade.nome,
-    }));
+    try {
+      const res = await db.query('SELECT * FROM cidade WHERE id = $1', [cidadeId]);
+      return res.rows.map((cidade) => ({
+        id: cidade.id,
+        nome: cidade.nome,
+      }));
+    } catch (err) {
+      console.error('Error executing query', err.stack);
+      throw err;
+    }
   },
 };

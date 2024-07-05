@@ -1,4 +1,4 @@
-require('./db/init.js');
+// require('./db/init.js');
 
 const express = require('express');
 const server = express();
