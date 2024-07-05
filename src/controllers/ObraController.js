@@ -27,7 +27,7 @@ module.exports = {
       id_autor: req.body.select_autor,
       id_genero_literario: req.body.select_genero_literario,
       endereco_pdf: req.file
-        ? `http://localhost:3000/pdf/${req.file.filename}`
+        ? `${process.env.APP_API_URL}/pdf/${req.file.filename}`
         : '',
     };
     try {
@@ -74,7 +74,7 @@ module.exports = {
       id_autor: req.body.select_autor,
       id_genero_literario: req.body.select_genero_literario,
       endereco_pdf: req.file
-        ? `http://localhost:3000/images/${req.file.filename}`
+        ? `${process.env.APP_API_URL}/images/${req.file.filename}`
         : '',
     };
 
