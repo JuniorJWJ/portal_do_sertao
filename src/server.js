@@ -7,6 +7,13 @@ const path = require('path');
 const { resolve } = require('path');
 const cors = require('cors');
 
+const corsOptions = {
+  origin: ['http://localhost:8080', 'https://portal-do-sertao.onrender.com'], // Adicione todas as origens permitidas aqui
+  optionsSuccessStatus: 200, // para navegadores antigos
+};
+
+server.use(cors(corsOptions));
+
 server.use(cors());
 server.set('view engine', 'ejs');
 server.use(express.static('public'));
