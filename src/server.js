@@ -8,7 +8,7 @@ const { resolve } = require('path');
 const cors = require('cors');
 
 const corsOptions = {
-  origin: ['http://localhost:8080', 'https://portal-do-sertao.onrender.com'], // Adicione todas as origens permitidas aqui
+  origin: ['http://localhost:8080', 'https://portal-do-sertao.onrender.com', 'https://front-portal-do-sertao-git-main-juniorjwjs-projects.vercel.app'], // Adicione todas as origens permitidas aqui
   optionsSuccessStatus: 200, // para navegadores antigos
 };
 
