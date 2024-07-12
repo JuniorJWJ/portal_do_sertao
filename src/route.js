@@ -7,6 +7,9 @@ const sobreController = require('./controllers/SobreController');
 // const userController = require("./controllers/userController");
 const cidadeController = require('./controllers/CidadeController');
 
+
+const AWSV2 = require('./config/aws');
+
 const { eAdmin } = require('../middlewares/auth');
 
 const multer = require('multer');
