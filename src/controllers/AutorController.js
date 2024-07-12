@@ -38,7 +38,7 @@ module.exports = {
       genero: req.body.genero,
       password: await bcrypt.hash(req.body.password, 8),
       endereco_foto: req.file
-        ? `http://localhost:3000/images/${req.file.filename}`
+        ? `${process.env.APP_API_URL}/images/${req.file.filename}`
         : '',
     };
     const existAutor = await Autor.show_email(autor.email);
@@ -97,7 +97,7 @@ module.exports = {
       id_cidade: req.body.id_cidade,
       genero: req.body.genero,
       endereco_foto: req.file
-        ? `http://localhost:3000/images/${req.file.filename}`
+        ? `${process.env.APP_API_URL}/images/${req.file.filename}`
         : '',
     };
 
