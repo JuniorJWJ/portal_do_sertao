@@ -8,8 +8,8 @@ dotenv.config();
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false // Apenas se estiver usando SSL localmente
-  }
+    rejectUnauthorized: false, // Apenas se estiver usando SSL localmente
+  },
 });
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
       throw error;
     }
   },
-  
+
   async show(generoId) {
     try {
       const client = await pool.connect();
@@ -37,13 +37,16 @@ module.exports = {
       const values = [generoId];
       const { rows } = await client.query(query, values);
       client.release();
-      return rows.map(generoLiterario => ({
+      return rows.map((generoLiterario) => ({
         id: generoLiterario.id,
-        nome: generoLiterario.nome
+        nome: generoLiterario.nome,
       }));
     } catch (error) {
-      console.error(`Error fetching generoLiterario with id ${generoId}:`, error);
+      console.error(
+        `Error fetching generoLiterario with id ${generoId}:`,
+        error,
+      );
       throw error;
     }
-  }
+  },
 };

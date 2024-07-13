@@ -13,13 +13,13 @@ module.exports = {
     const cidade = await Cidade.get();
     return res.json({ autor: autor, cidade: cidade });
   },
-  
+
   async get_all(req, res) {
     const autor = await Autor.get_all();
     const cidade = await Cidade.get();
     return res.json({ autor: autor, cidade: cidade });
   },
-  
+
   async create(req, res) {
     if (
       !req.body.nome ||
@@ -31,11 +31,13 @@ module.exports = {
       !req.body.password ||
       !req.file
     ) {
-      return res.status(500).json({ msg: 'Preencha todos os dados para completar o cadastro' });
+      return res
+        .status(500)
+        .json({ msg: 'Preencha todos os dados para completar o cadastro' });
     }
-    
+
     const hashedPassword = await bcrypt.hash(req.body.password, 8);
-    
+
     let fotoUrl = '';
     if (req.file) {
       if (process.env.STORAGE_TYPE === 's3') {
@@ -44,7 +46,7 @@ module.exports = {
         fotoUrl = `${process.env.APP_API_URL}/images/${req.file.filename}`;
       }
     }
-    
+
     const autor = {
       nome: req.body.nome,
       profissao: req.body.profissao,
@@ -55,7 +57,7 @@ module.exports = {
       password: hashedPassword,
       endereco_foto: fotoUrl,
     };
-    
+
     const existAutor = await Autor.show_email(autor.email);
     if (existAutor) {
       return res.status(200).json({
@@ -63,7 +65,7 @@ module.exports = {
         mensagem: 'Já existe um autor com esse email!',
       });
     }
-    
+
     try {
       await Autor.create(autor);
       res.status(201).json({ msg: 'Autor registrado com sucesso!' });
@@ -71,7 +73,6 @@ module.exports = {
       console.log(error);
       res.status(500).json({ msg: 'Erro ao registrar o autor no sistema!' });
     }
-
   },
   async delete(req, res) {
     const autorId = req.params.id;
@@ -119,9 +120,7 @@ module.exports = {
       email: req.body.email,
       id_cidade: req.body.id_cidade,
       genero: req.body.genero,
-      endereco_foto: req.file
-        ? fotoUrl
-        : '',
+      endereco_foto: req.file ? fotoUrl : '',
     };
 
     if (autorId === '' || autorId == undefined) {

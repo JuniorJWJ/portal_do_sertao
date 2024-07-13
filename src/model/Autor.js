@@ -9,8 +9,8 @@ dotenv.config();
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false // Apenas se estiver usando SSL localmente
-  }
+    rejectUnauthorized: false, // Apenas se estiver usando SSL localmente
+  },
 });
 
 module.exports = {
@@ -28,7 +28,7 @@ module.exports = {
       throw error;
     }
   },
-  
+
   async get_all() {
     try {
       const client = await pool.connect();
@@ -43,7 +43,7 @@ module.exports = {
       throw error;
     }
   },
-  
+
   async create(newAutor) {
     try {
       const client = await pool.connect();
@@ -63,7 +63,7 @@ module.exports = {
         newAutor.id_cidade,
         newAutor.password,
         0,
-        0
+        0,
       ];
       await client.query(query, values);
       client.release();
@@ -72,7 +72,7 @@ module.exports = {
       throw error;
     }
   },
-  
+
   async delete(id) {
     try {
       const client = await pool.connect();
@@ -87,7 +87,7 @@ module.exports = {
       throw error;
     }
   },
-  
+
   async update(updatedAutor, autorId) {
     try {
       const client = await pool.connect();
@@ -110,7 +110,7 @@ module.exports = {
         updatedAutor.biografia,
         updatedAutor.genero,
         updatedAutor.id_cidade,
-        autorId
+        autorId,
       ];
       await client.query(query, values);
       client.release();
@@ -119,7 +119,7 @@ module.exports = {
       throw error;
     }
   },
-  
+
   async approv(autorId) {
     try {
       const client = await pool.connect();
@@ -136,7 +136,7 @@ module.exports = {
       throw error;
     }
   },
-  
+
   async show(autorId) {
     try {
       const client = await pool.connect();
@@ -146,7 +146,7 @@ module.exports = {
       const values = [autorId];
       const { rows } = await client.query(query, values);
       client.release();
-      return rows.map(autor => ({
+      return rows.map((autor) => ({
         id: autor.id,
         nome: autor.nome,
         profissao: autor.profissao,
@@ -156,14 +156,14 @@ module.exports = {
         genero: autor.genero,
         id_cidade: autor.id_cidade,
         adm: autor.adm,
-        aprovado: autor.aprovado
+        aprovado: autor.aprovado,
       }));
     } catch (error) {
       console.error('Error fetching autor by id:', error);
       throw error;
     }
   },
-  
+
   async show_cidade(idCidade) {
     try {
       const client = await pool.connect();
@@ -173,7 +173,7 @@ module.exports = {
       const values = [idCidade];
       const { rows } = await client.query(query, values);
       client.release();
-      return rows.map(autor => ({
+      return rows.map((autor) => ({
         id: autor.id,
         nome: autor.nome,
         profissao: autor.profissao,
@@ -183,14 +183,14 @@ module.exports = {
         genero: autor.genero,
         id_cidade: autor.id_cidade,
         adm: autor.adm,
-        aprovado: autor.aprovado
+        aprovado: autor.aprovado,
       }));
     } catch (error) {
       console.error('Error fetching autores by cidade:', error);
       throw error;
     }
   },
-  
+
   async show_email(email) {
     try {
       const client = await pool.connect();
@@ -203,7 +203,7 @@ module.exports = {
       if (rows.length === 0) {
         return '';
       } else {
-        return rows.map(autor => ({
+        return rows.map((autor) => ({
           id: autor.id,
           nome: autor.nome,
           profissao: autor.profissao,
@@ -214,12 +214,12 @@ module.exports = {
           id_cidade: autor.id_cidade,
           adm: autor.adm,
           aprovado: autor.aprovado,
-          password: autor.password
+          password: autor.password,
         }));
       }
     } catch (error) {
       console.error('Error fetching autor by email:', error);
       throw error;
     }
-  }
+  },
 };

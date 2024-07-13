@@ -12,7 +12,9 @@ module.exports = {
   },
   async show(cidadeId) {
     try {
-      const res = await db.query('SELECT * FROM cidade WHERE id = $1', [cidadeId]);
+      const res = await db.query('SELECT * FROM cidade WHERE id = $1', [
+        cidadeId,
+      ]);
       return res.rows.map((cidade) => ({
         id: cidade.id,
         nome: cidade.nome,

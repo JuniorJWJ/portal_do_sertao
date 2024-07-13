@@ -1,6 +1,11 @@
 const Obra = require('../model/Obra');
 const Autor = require('../model/Autor');
 const GeneroLiterario = require('../model/GeneroLiterario');
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const aws = require('aws-sdk');
+
+const s3 = new aws.S3();
 
 module.exports = {
   async get(req, res) {
@@ -12,24 +17,34 @@ module.exports = {
     return res.json({ obra: obra });
   },
   async create(req, res) {
+    let pdfUrl = '';
+    if (req.file) {
+      if (process.env.STORAGE_TYPE === 's3') {
+        pdfUrl = req.file.location; // URL do PDF no S3
+      } else {
+        pdfUrl = `${process.env.APP_API_URL}/pdf/${req.file.filename}`;
+      }
+    }
+
+    // Verifique se todos os campos obrigatórios estão preenchidos
     if (
-      req.body.nome == '' ||
-      req.body.select_autor == '' ||
-      req.body.select_genero_literario == '' ||
-      req.body.file == ''
+      !req.body.nome ||
+      !req.body.select_autor ||
+      !req.body.select_genero_literario ||
+      !pdfUrl
     ) {
       return res
         .status(500)
         .json({ msg: 'Preencha todos os dados para completar o cadastro' });
     }
+
     const obra = {
       nome: req.body.nome,
       id_autor: req.body.select_autor,
       id_genero_literario: req.body.select_genero_literario,
-      endereco_pdf: req.file
-        ? `${process.env.APP_API_URL}/pdf/${req.file.filename}`
-        : '',
+      endereco_pdf: pdfUrl,
     };
+
     try {
       await Obra.create(obra);
       res.status(201).json({ msg: 'Obra registrada com sucesso!', obra });
@@ -69,13 +84,19 @@ module.exports = {
     const obraId = req.params.id;
     console.log(obraId);
 
+    if (req.file) {
+      if (process.env.STORAGE_TYPE === 's3') {
+        pdfUrl = req.file.location; // URL do PDF no S3
+      } else {
+        pdfUrl = `${process.env.APP_API_URL}/pdf/${req.file.filename}`;
+      }
+    }
+
     var updatedObra = {
       nome: req.body.nome,
       id_autor: req.body.select_autor,
       id_genero_literario: req.body.select_genero_literario,
-      endereco_pdf: req.file
-        ? `${process.env.APP_API_URL}/images/${req.file.filename}`
-        : '',
+      endereco_pdf: req.file ? pdfUrl : '',
     };
 
     if (obraId === '' || obraId == undefined) {
@@ -255,3 +276,5 @@ module.exports = {
     }
   },
 };
+
+//obra backup

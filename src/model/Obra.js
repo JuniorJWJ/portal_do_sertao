@@ -9,8 +9,8 @@ dotenv.config();
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false // Apenas se estiver usando SSL localmente
-  }
+    rejectUnauthorized: false, // Apenas se estiver usando SSL localmente
+  },
 });
 
 module.exports = {
@@ -67,24 +67,26 @@ module.exports = {
     try {
       const client = await pool.connect();
       const id = uuidv4();
+      console.log(id);
       const query = `
-        INSERT INTO obra (
-          id,
-          nome,
-          id_autor,
-          id_genero_literario,
-          endereco_pdf
-        ) VALUES (
-          $1, $2, $3, $4, $5
-        )
-      `;
+            INSERT INTO obra (
+                id,
+                nome,
+                id_autor,
+                id_genero_literario,
+                endereco_pdf
+            ) VALUES (
+                $1, $2, $3, $4, $5
+            )
+        `;
       const values = [
         id,
         newObra.nome,
         newObra.id_autor,
         newObra.id_genero_literario,
-        newObra.endereco_pdf || ''
+        newObra.endereco_pdf || '', // Certifique-se de que endereco_pdf nunca seja null
       ];
+      console.log(values);
       await client.query(query, values);
       client.release();
     } catch (error) {
@@ -125,7 +127,7 @@ module.exports = {
         updatedObra.id_autor,
         updatedObra.endereco_pdf,
         updatedObra.id_genero_literario,
-        obraId
+        obraId,
       ];
       await client.query(query, values);
       client.release();
@@ -164,12 +166,12 @@ module.exports = {
       const values = [obraId];
       const { rows } = await client.query(query, values);
       client.release();
-      return rows.map(obra => ({
+      return rows.map((obra) => ({
         id: obra.id,
         nome: obra.nome,
         id_autor: obra.id_autor,
         endereco_pdf: obra.endereco_pdf,
-        id_genero_literario: obra.id_genero_literario
+        id_genero_literario: obra.id_genero_literario,
       }));
     } catch (error) {
       console.error('Error fetching obra:', error);
@@ -186,12 +188,12 @@ module.exports = {
       const values = [idGenero];
       const { rows } = await client.query(query, values);
       client.release();
-      return rows.map(obra => ({
+      return rows.map((obra) => ({
         id: obra.id,
         nome: obra.nome,
         id_autor: obra.id_autor,
         endereco_pdf: obra.endereco_pdf,
-        id_genero_literario: obra.id_genero_literario
+        id_genero_literario: obra.id_genero_literario,
       }));
     } catch (error) {
       console.error('Error fetching obras by genero:', error);
@@ -208,16 +210,16 @@ module.exports = {
       const values = [idAutor];
       const { rows } = await client.query(query, values);
       client.release();
-      return rows.map(obra => ({
+      return rows.map((obra) => ({
         id: obra.id,
         nome: obra.nome,
         id_autor: obra.id_autor,
         endereco_pdf: obra.endereco_pdf,
-        id_genero_literario: obra.id_genero_literario
+        id_genero_literario: obra.id_genero_literario,
       }));
     } catch (error) {
       console.error('Error fetching obras by autor:', error);
       throw error;
     }
-  }
+  },
 };
