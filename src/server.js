@@ -6,15 +6,16 @@ const route = require('./route');
 const path = require('path');
 const { resolve } = require('path');
 const cors = require('cors');
+const corsMiddleware = require('.././middlewares/cors.js');
 
-const corsOptions = {
-  origin: ['http://localhost:8080', 'https://portal-do-sertao.onrender.com', 'https://front-portal-do-sertao-git-main-juniorjwjs-projects.vercel.app'], // Adicione todas as origens permitidas aqui
-  optionsSuccessStatus: 200, // para navegadores antigos
-};
+// const corsOptions = {
+//   origin: ['http://localhost:8080', 'https://portal-do-sertao.onrender.com', 'https://front-portal-do-sertao-git-main-juniorjwjs-projects.vercel.app'], // Adicione todas as origens permitidas aqui
+//   optionsSuccessStatus: 200, // para navegadores antigos
+// };
 
-server.use(cors(corsOptions));
+// server.use(cors(corsOptions));
 
-server.use(cors());
+server.use(corsMiddleware);
 server.set('view engine', 'ejs');
 server.use(express.static('public'));
 server.set('views', path.join(__dirname, 'views'));
