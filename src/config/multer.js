@@ -23,7 +23,7 @@ const storageTypes = {
     s3: new aws.S3({ region: 'us-west-2' }),
     bucket: process.env.BUCKET_NAME,
     contentType: multerS3.AUTO_CONTENT_TYPE,
-    acl: 'private',
+    acl: 'public-read',
     key: (req, file, cb) => {
       crypto.randomBytes(16, (err, hash) => {
         if (err) cb(err);
