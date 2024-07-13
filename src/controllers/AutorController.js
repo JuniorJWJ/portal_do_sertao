@@ -104,6 +104,14 @@ module.exports = {
     const autorId = req.params.id;
     // console.log(autorId);
 
+    if (req.file) {
+      if (process.env.STORAGE_TYPE === 's3') {
+        fotoUrl = req.file.location; // URL da imagem no S3
+      } else {
+        fotoUrl = `${process.env.APP_API_URL}/images/${req.file.filename}`;
+      }
+    }
+
     const updatedAutor = {
       nome: req.body.nome,
       profissao: req.body.profissao,
@@ -112,7 +120,7 @@ module.exports = {
       id_cidade: req.body.id_cidade,
       genero: req.body.genero,
       endereco_foto: req.file
-        ? `${process.env.APP_API_URL}/images/${req.file.filename}`
+        ? fotoUrl
         : '',
     };
 
