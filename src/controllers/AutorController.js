@@ -294,7 +294,7 @@ module.exports = {
     }
     var token = jwt.sign(
       { id: user[0].id, adm: user[0].adm },
-      'D62ST92Y7A6V7K5C6W9ZU6W8KS3',
+      `${process.env.TOKEN_JWT}`,
       {
         expiresIn: '30m',
       },
