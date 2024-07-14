@@ -216,6 +216,7 @@ module.exports = {
         id_autor: obra.id_autor,
         endereco_pdf: obra.endereco_pdf,
         id_genero_literario: obra.id_genero_literario,
+        aprovado: obra.aprovado,
       }));
     } catch (error) {
       console.error('Error fetching obras by autor:', error);
