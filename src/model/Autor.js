@@ -168,7 +168,7 @@ module.exports = {
     try {
       const client = await pool.connect();
       const query = `
-        SELECT * FROM autor WHERE id_cidade = $1
+        SELECT * FROM autor WHERE id_cidade = $1 AND aprovado = 1;
       `;
       const values = [idCidade];
       const { rows } = await client.query(query, values);
