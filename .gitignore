@@ -4,3 +4,6 @@ tmp/uploads/*
 src/db/rocketq.sqlite
 .vercel
 .env
+src/db/init1.js
+src/db/insertCidadeGenero.js
+src/db/insertAutor.js

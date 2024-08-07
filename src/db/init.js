@@ -3,6 +3,7 @@ const db = require('./config');
 const initDb = {
   async init() {
     const client = await db.connect();
+    console.log('Connected to the database');
 
     try {
       await client.query('BEGIN');
@@ -10,6 +11,7 @@ const initDb = {
       await client.query(`
         CREATE EXTENSION IF NOT EXISTS "pgcrypto";
       `);
+      console.log('Extension pgcrypto checked/created');
 
       await client.query(`
         CREATE TABLE IF NOT EXISTS cidade (
@@ -17,6 +19,7 @@ const initDb = {
           nome VARCHAR
         )
       `);
+      console.log('Table cidade checked/created');
 
       await client.query(`
         CREATE TABLE IF NOT EXISTS generoLiterario (
@@ -24,6 +27,7 @@ const initDb = {
           nome VARCHAR
         )
       `);
+      console.log('Table generoLiterario checked/created');
 
       await client.query(`
         CREATE TABLE IF NOT EXISTS autor (
@@ -34,6 +38,7 @@ const initDb = {
           email VARCHAR,
           endereco_foto VARCHAR,
           genero VARCHAR,
+          cor_de_pele VARCHAR,
           id_cidade INTEGER,
           password VARCHAR(255),
           adm INTEGER,
@@ -41,6 +46,7 @@ const initDb = {
           FOREIGN KEY (id_cidade) REFERENCES cidade(id)
         )
       `);
+      console.log('Table autor checked/created');
 
       await client.query(`
         CREATE TABLE IF NOT EXISTS obra (
@@ -54,13 +60,16 @@ const initDb = {
           FOREIGN KEY (id_autor) REFERENCES autor(id)
         )
       `);
+      console.log('Table obra checked/created');
 
       await client.query('COMMIT');
+      console.log('Transaction committed');
     } catch (e) {
       await client.query('ROLLBACK');
       console.error('Error executing query', e.stack);
     } finally {
       client.release();
+      console.log('Client released');
     }
   },
 };

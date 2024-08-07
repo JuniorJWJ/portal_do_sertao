@@ -49,8 +49,8 @@ module.exports = {
       const client = await pool.connect();
       const id = uuidv4();
       const query = `
-        INSERT INTO autor (id, nome, profissao, biografia, email, endereco_foto, genero, id_cidade, password, adm, aprovado)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        INSERT INTO autor (id, nome, profissao, biografia, email, endereco_foto, genero, cor_de_pele, id_cidade, password, adm, aprovado)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       `;
       const values = [
         id,
@@ -60,6 +60,7 @@ module.exports = {
         newAutor.email || '',
         newAutor.endereco_foto || '',
         newAutor.genero,
+        newAutor.cor_de_pele,
         newAutor.id_cidade,
         newAutor.password,
         0,
@@ -100,7 +101,8 @@ module.exports = {
         biografia = $5,
         genero = $6,
         id_cidade = $7
-        WHERE id = $8
+        cor_de_pele = $8,
+        WHERE id = $9
       `;
       const values = [
         updatedAutor.nome,
@@ -110,6 +112,7 @@ module.exports = {
         updatedAutor.biografia,
         updatedAutor.genero,
         updatedAutor.id_cidade,
+        updatedAutor.cor_de_pele,
         autorId,
       ];
       await client.query(query, values);
@@ -154,6 +157,7 @@ module.exports = {
         endereco_foto: autor.endereco_foto,
         biografia: autor.biografia,
         genero: autor.genero,
+        cor_de_pele: autor.cor_de_pele,
         id_cidade: autor.id_cidade,
         adm: autor.adm,
         aprovado: autor.aprovado,
@@ -181,6 +185,7 @@ module.exports = {
         endereco_foto: autor.endereco_foto,
         biografia: autor.biografia,
         genero: autor.genero,
+        cor_de_pele: autor.cor_de_pele,
         id_cidade: autor.id_cidade,
         adm: autor.adm,
         aprovado: autor.aprovado,
@@ -211,6 +216,7 @@ module.exports = {
           endereco_foto: autor.endereco_foto,
           biografia: autor.biografia,
           genero: autor.genero,
+          cor_de_pele: autor.cor_de_pele,
           id_cidade: autor.id_cidade,
           adm: autor.adm,
           aprovado: autor.aprovado,

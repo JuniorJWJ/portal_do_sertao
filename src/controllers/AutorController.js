@@ -28,6 +28,7 @@ module.exports = {
       !req.body.email ||
       !req.body.id_cidade ||
       !req.body.genero ||
+      !req.body.cor_de_pele ||
       !req.body.password ||
       !req.file
     ) {
@@ -54,6 +55,7 @@ module.exports = {
       email: req.body.email,
       id_cidade: req.body.id_cidade,
       genero: req.body.genero,
+      cor_de_pele: req.body.cor_de_pele,
       password: hashedPassword,
       endereco_foto: fotoUrl,
     };
