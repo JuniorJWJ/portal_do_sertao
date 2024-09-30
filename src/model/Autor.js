@@ -100,8 +100,8 @@ module.exports = {
         endereco_foto = $4,
         biografia = $5,
         genero = $6,
-        id_cidade = $7
-        cor_de_pele = $8,
+        id_cidade = $7,
+        cor_de_pele = $8
         WHERE id = $9
       `;
       const values = [
