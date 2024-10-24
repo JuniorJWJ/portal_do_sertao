@@ -58,7 +58,7 @@ route.get('/obra/:id', obraController.show);
 route.get('/obra/', obraController.show);
 route.post(
   '/create_obra',
-  multer(multerConfig).single('file'),
+  multer(multerConfig).fields([{ name: 'file' }, { name: 'audioFile' }]),
   obraController.create,
 );
 route.put(

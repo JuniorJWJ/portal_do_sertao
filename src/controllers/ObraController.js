@@ -17,40 +17,61 @@ module.exports = {
     return res.json({ obra: obra });
   },
   async create(req, res) {
+    // console.log(req.files); // Log correto para debugar os arquivos
+
     let pdfUrl = '';
-    if (req.file) {
-      if (process.env.STORAGE_TYPE === 's3') {
-        pdfUrl = req.file.location; // URL do PDF no S3
-      } else {
-        pdfUrl = `${process.env.APP_API_URL}/pdf/${req.file.filename}`;
+    let audioUrl = '';
+
+    // Verificação de arquivos
+    if (req.files) {
+      // Se estiver usando S3
+      // console.log("req.files:", req.files);
+      if (req.files.file && req.files.file.length > 0) {
+        if (process.env.STORAGE_TYPE === 's3') {
+          pdfUrl = req.files.file[0].location; // URL gerada pelo S3
+        } else {
+          pdfUrl = req.files.file[0].path; // Caminho do arquivo local
+        }
+      }
+
+      if (req.files.audioFile && req.files.audioFile.length > 0) {
+        if (process.env.STORAGE_TYPE === 's3') {
+          audioUrl = req.files.audioFile[0].location; // URL gerada pelo S3
+        } else {
+          audioUrl = req.files.audioFile[0].path; // Caminho do arquivo local
+        }
       }
     }
 
-    // Verifique se todos os campos obrigatórios estão preenchidos
+    // Verifique se os campos obrigatórios estão presentes
     if (
       !req.body.nome ||
       !req.body.select_autor ||
       !req.body.select_genero_literario ||
-      !pdfUrl
+      !pdfUrl // O PDF é obrigatório
     ) {
       return res
-        .status(500)
-        .json({ msg: 'Preencha todos os dados para completar o cadastro' });
+        .status(400)
+        .json({ msg: 'Preencha todos os dados para completar o cadastro.' });
     }
-
+    // console.log("req.body:",req.body)
     const obra = {
       nome: req.body.nome,
       id_autor: req.body.select_autor,
       id_genero_literario: req.body.select_genero_literario,
       endereco_pdf: pdfUrl,
+      endereco_video: req.body.endereco_video,
+      endereco_audio: audioUrl || null, // Audio é opcional
     };
+    // console.log("obra:", obra)
 
     try {
+      // Cria a obra no banco de dados
       await Obra.create(obra);
       res.status(201).json({ msg: 'Obra registrada com sucesso!', obra });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ msg: 'Erro ao registrar o obra no sistema!' });
+      console.error(error);
+      res.status(500).json({ msg: 'Erro ao registrar a obra no sistema!' });
     }
   },
   async delete(req, res) {
@@ -65,7 +86,7 @@ module.exports = {
 
     try {
       const obra = await Obra.show(obraId);
-      console.log(obra);
+      // console.log(obra);
 
       if (obra.length === 0) {
         return res.status(400).json({
@@ -82,7 +103,8 @@ module.exports = {
   },
   async update(req, res) {
     const obraId = req.params.id;
-    console.log(obraId);
+    let pdfUrl = '';
+    let audioUrl = '';
 
     if (req.file) {
       if (process.env.STORAGE_TYPE === 's3') {
@@ -92,14 +114,26 @@ module.exports = {
       }
     }
 
+    if (req.audioFile) {
+      if (process.env.STORAGE_TYPE === 's3') {
+        audioUrl = req.audioFile.location; // URL do áudio no S3
+      } else {
+        audioUrl = `${process.env.APP_API_URL}/audio/${req.audioFile.filename}`;
+      }
+    }
+
     var updatedObra = {
       nome: req.body.nome,
       id_autor: req.body.select_autor,
       id_genero_literario: req.body.select_genero_literario,
-      endereco_pdf: req.file ? pdfUrl : '',
+      endereco_pdf: pdfUrl || '', // Usa o valor de pdfUrl se houver, ou mantém string vazia
+      endereco_audio: audioUrl || '', // Usa o valor de audioUrl se houver, ou mantém string vazia
+      endereco_video: req.body.endereco_video,
     };
 
-    if (obraId === '' || obraId == undefined) {
+    console.log('updatedObra: ', updatedObra);
+
+    if (!obraId) {
       return res.status(400).json({
         erro: true,
         mensagem: 'Insira um ID correto!',
@@ -108,7 +142,7 @@ module.exports = {
 
     try {
       const obra = await Obra.show(obraId);
-      console.log(obra);
+      console.log('meio:', obra);
 
       if (obra.length === 0) {
         return res.status(400).json({
@@ -118,19 +152,20 @@ module.exports = {
       }
 
       if (!updatedObra.endereco_pdf) {
-        var ObraBDteste = await Obra.show(obraId);
-        updatedObra.endereco_pdf = ObraBDteste[0].endereco_pdf;
+        updatedObra.endereco_pdf = obra[0].endereco_pdf; // Preserva o PDF original se não houver novo
       }
 
-      console.log(updatedObra, 'id = ' + obraId);
+      if (!updatedObra.endereco_audio) {
+        updatedObra.endereco_audio = obra[0].endereco_audio; // Preserva o áudio original se não houver novo
+      }
 
       try {
         await Obra.update(updatedObra, obraId);
-        res.status(201).json({ msg: 'Obra atualizado com sucesso!' });
+        res.status(201).json({ msg: 'Obra atualizada com sucesso!' });
       } catch (error) {
         return res.status(400).json({
           erro: true,
-          mensagem: 'Erro ao buscar obra!',
+          mensagem: 'Erro ao atualizar a obra!',
         });
       }
     } catch (error) {
@@ -187,7 +222,7 @@ module.exports = {
     }
     try {
       const obra = await Obra.show(obraId);
-      console.log(obra);
+      // console.log(obra);
 
       if (obra.length == 0) {
         return res.status(400).json({
@@ -220,7 +255,7 @@ module.exports = {
     }
     try {
       const obra = await Obra.show_genero(obraGenero);
-      console.log(obra);
+      // console.log(obra);
 
       if (obra.length == 0) {
         return res.status(400).json({
@@ -244,7 +279,7 @@ module.exports = {
   },
   async show_autor(req, res) {
     const obraAutor = req.params.id;
-
+    // console.log(obraAutor);
     if (obraAutor === '' || obraAutor == undefined) {
       return res.status(400).json({
         erro: true,
@@ -253,7 +288,7 @@ module.exports = {
     }
     try {
       const obra = await Obra.show_autor(obraAutor);
-      console.log(obra);
+      // console.log(obra);
 
       if (obra.length == 0) {
         return res.status(400).json({

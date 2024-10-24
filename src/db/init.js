@@ -53,6 +53,8 @@ const initDb = {
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
           nome VARCHAR,
           endereco_pdf VARCHAR,
+          endereco_audio VARCHAR,
+          endereco_video VARCHAR,
           id_autor UUID,
           id_genero_literario INTEGER,
           aprovado INTEGER DEFAULT 0, -- Define o valor padrão como 0

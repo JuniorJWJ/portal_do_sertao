@@ -67,16 +67,18 @@ module.exports = {
     try {
       const client = await pool.connect();
       const id = uuidv4();
-      console.log(id);
+      // console.log(id);
       const query = `
             INSERT INTO obra (
                 id,
                 nome,
                 id_autor,
                 id_genero_literario,
-                endereco_pdf
+                endereco_video,
+                endereco_pdf,
+                endereco_audio
             ) VALUES (
-                $1, $2, $3, $4, $5
+                $1, $2, $3, $4, $5, $6, $7
             )
         `;
       const values = [
@@ -84,9 +86,11 @@ module.exports = {
         newObra.nome,
         newObra.id_autor,
         newObra.id_genero_literario,
+        newObra.endereco_video || '',
         newObra.endereco_pdf || '', // Certifique-se de que endereco_pdf nunca seja null
+        newObra.endereco_audio || '',
       ];
-      console.log(values);
+      //console.log(values);
       await client.query(query, values);
       client.release();
     } catch (error) {
@@ -118,14 +122,16 @@ module.exports = {
         nome = $1,
         id_autor = $2,
         endereco_pdf = $3,
-        id_genero_literario = $4,
+        endereco_audio = $4,
+        id_genero_literario = $5,
         aprovado = 0
-        WHERE id = $5
+        WHERE id = $6
       `;
       const values = [
         updatedObra.nome,
         updatedObra.id_autor,
         updatedObra.endereco_pdf,
+        updatedObra.endereco_audio,
         updatedObra.id_genero_literario,
         obraId,
       ];
@@ -171,6 +177,8 @@ module.exports = {
         nome: obra.nome,
         id_autor: obra.id_autor,
         endereco_pdf: obra.endereco_pdf,
+        endereco_audio: obra.endereco_audio,
+        endereco_video: obra.endereco_video,
         id_genero_literario: obra.id_genero_literario,
       }));
     } catch (error) {
@@ -193,6 +201,8 @@ module.exports = {
         nome: obra.nome,
         id_autor: obra.id_autor,
         endereco_pdf: obra.endereco_pdf,
+        endereco_audio: obra.endereco_audio,
+        endereco_video: obra.endereco_video,
         id_genero_literario: obra.id_genero_literario,
       }));
     } catch (error) {
@@ -202,6 +212,7 @@ module.exports = {
   },
 
   async show_autor(idAutor) {
+    console.log(idAutor);
     try {
       const client = await pool.connect();
       const query = `
@@ -215,6 +226,8 @@ module.exports = {
         nome: obra.nome,
         id_autor: obra.id_autor,
         endereco_pdf: obra.endereco_pdf,
+        endereco_audio: obra.endereco_audio,
+        endereco_video: obra.endereco_video,
         id_genero_literario: obra.id_genero_literario,
         aprovado: obra.aprovado,
       }));

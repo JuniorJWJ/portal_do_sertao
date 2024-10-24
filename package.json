@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon .",
     "init-db": "node src/db/init.js",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "insert-db": "node src/db/insertCidadeGenero.js && node src/db/insertAutor.js"
   },
   "keywords": [],
   "author": "",
