@@ -63,12 +63,12 @@ route.post(
 );
 route.put(
   '/obra/update/:id',
-  multer(multerConfig).single('file'),
+  multer(multerConfig).fields([{ name: 'file' }, { name: 'audioFile' }]),
   obraController.update,
 );
 route.put(
   '/obra/update/',
-  multer(multerConfig).single('file'),
+  multer(multerConfig).fields([{ name: 'file' }, { name: 'audioFile' }]),
   obraController.update,
 );
 

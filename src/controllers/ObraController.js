@@ -102,23 +102,28 @@ module.exports = {
     }
   },
   async update(req, res) {
+    console.log("chegou aqui")
     const obraId = req.params.id;
     let pdfUrl = '';
     let audioUrl = '';
-
-    if (req.file) {
-      if (process.env.STORAGE_TYPE === 's3') {
-        pdfUrl = req.file.location; // URL do PDF no S3
-      } else {
-        pdfUrl = `${process.env.APP_API_URL}/pdf/${req.file.filename}`;
+    console.log("req.files: ", req.files)
+    if (req.files) {
+      // Se estiver usando S3
+      // console.log("req.files:", req.files);
+      if (req.files.file && req.files.file.length > 0) {
+        if (process.env.STORAGE_TYPE === 's3') {
+          pdfUrl = req.files.file[0].location; // URL gerada pelo S3
+        } else {
+          pdfUrl = req.files.file[0].path; // Caminho do arquivo local
+        }
       }
-    }
 
-    if (req.audioFile) {
-      if (process.env.STORAGE_TYPE === 's3') {
-        audioUrl = req.audioFile.location; // URL do áudio no S3
-      } else {
-        audioUrl = `${process.env.APP_API_URL}/audio/${req.audioFile.filename}`;
+      if (req.files.audioFile && req.files.audioFile.length > 0) {
+        if (process.env.STORAGE_TYPE === 's3') {
+          audioUrl = req.files.audioFile[0].location; // URL gerada pelo S3
+        } else {
+          audioUrl = req.files.audioFile[0].path; // Caminho do arquivo local
+        }
       }
     }
 
@@ -158,7 +163,7 @@ module.exports = {
       if (!updatedObra.endereco_audio) {
         updatedObra.endereco_audio = obra[0].endereco_audio; // Preserva o áudio original se não houver novo
       }
-
+      console.log("updatedObra um pouco antes de atualizar:", updatedObra)
       try {
         await Obra.update(updatedObra, obraId);
         res.status(201).json({ msg: 'Obra atualizada com sucesso!' });

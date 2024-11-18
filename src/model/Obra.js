@@ -115,6 +115,7 @@ module.exports = {
   },
 
   async update(updatedObra, obraId) {
+    console.log("updatedObra dentro do Obra.js:", updatedObra);
     try {
       const client = await pool.connect();
       const query = `
@@ -124,8 +125,9 @@ module.exports = {
         endereco_pdf = $3,
         endereco_audio = $4,
         id_genero_literario = $5,
+        endereco_video = $6,
         aprovado = 0
-        WHERE id = $6
+        WHERE id = $7
       `;
       const values = [
         updatedObra.nome,
@@ -133,6 +135,7 @@ module.exports = {
         updatedObra.endereco_pdf,
         updatedObra.endereco_audio,
         updatedObra.id_genero_literario,
+        updatedObra.endereco_video,
         obraId,
       ];
       await client.query(query, values);
