@@ -21,7 +21,7 @@ route.get('/', indexController.get);
 route.get('/sobre', sobreController.get);
 //Autor
 route.get('/lista_autor', autorController.get);
-route.get('/lista_autor_adm', autorController.get_all);
+route.get('/lista_autor_adm', eAdmin, autorController.get_all);
 route.get('/lista_autor/cidade/:id', autorController.show_cidade);
 route.get('/lista_autor/cidade/', autorController.show_cidade);
 route.get('/autor/:id', autorController.show);
@@ -33,23 +33,25 @@ route.post(
 );
 route.put(
   '/autor/update/:id',
+  eAdmin,
   multer(multerConfig).single('file'),
   autorController.update,
 );
 route.put(
   '/autor/update/',
+  eAdmin,
   multer(multerConfig).single('file'),
   autorController.update,
 );
-route.patch('/autor/approv/:id', autorController.approv);
-route.delete('/autor/delete/:id', autorController.delete);
-route.delete('/autor/delete/', autorController.delete);
+route.patch('/autor/approv/:id', eAdmin, autorController.approv);
+route.delete('/autor/delete/:id', eAdmin, autorController.delete);
+route.delete('/autor/delete/', eAdmin, autorController.delete);
 
 route.post('/autor/log', autorController.log_user);
 route.get('/profile/autor', eAdmin, autorController.profile);
 //Obra
 route.get('/lista_obra', obraController.get);
-route.get('/lista_obra_adm', obraController.get_all);
+route.get('/lista_obra_adm', eAdmin, obraController.get_all);
 route.get('/lista_obra/genero/:id', obraController.show_genero);
 route.get('/lista_obra/genero/', obraController.show_genero);
 route.get('/lista_obra/autor/:id', obraController.show_autor);
@@ -58,24 +60,27 @@ route.get('/obra/:id', obraController.show);
 route.get('/obra/', obraController.show);
 route.post(
   '/create_obra',
+  eAdmin,
   multer(multerConfig).fields([{ name: 'file' }, { name: 'audioFile' }]),
   obraController.create,
 );
 route.put(
   '/obra/update/:id',
+  eAdmin,
   multer(multerConfig).fields([{ name: 'file' }, { name: 'audioFile' }]),
   obraController.update,
 );
 route.put(
   '/obra/update/',
+  eAdmin,
   multer(multerConfig).fields([{ name: 'file' }, { name: 'audioFile' }]),
   obraController.update,
 );
 
-route.patch('/obra/approv/:id', obraController.approv);
-route.patch('/obra/approv/', obraController.approv);
-route.delete('/obra/delete/:id', obraController.delete);
-route.delete('/obra/delete/', obraController.delete);
+route.patch('/obra/approv/:id', eAdmin, obraController.approv);
+route.patch('/obra/approv/', eAdmin, obraController.approv);
+route.delete('/obra/delete/:id', eAdmin, obraController.delete);
+route.delete('/obra/delete/', eAdmin, obraController.delete);
 //User
 // route.get("/teste", eAdmin, userController.show_users);
 // route.get("/create_user", userController.create_user_get);

@@ -5,11 +5,15 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Configuração do Pool de conexão
+// const pool = new Pool({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false, // Apenas se estiver usando SSL localmente
+//   },
+// });
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Apenas se estiver usando SSL localmente
-  },
+  ssl: false,
 });
 
 module.exports = {

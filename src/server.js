@@ -5,7 +5,6 @@ const server = express();
 const route = require('./route');
 const path = require('path');
 const { resolve } = require('path');
-const cors = require('cors');
 const corsMiddleware = require('.././middlewares/cors.js');
 
 // const corsOptions = {
@@ -15,17 +14,22 @@ const corsMiddleware = require('.././middlewares/cors.js');
 
 // server.use(cors(corsOptions));
 
+server.disable('x-powered-by');
 server.use(corsMiddleware);
 server.set('view engine', 'ejs');
 server.use(express.static('public'));
 server.set('views', path.join(__dirname, 'views'));
-server.use(express.urlencoded({ extended: true }));
+server.use(express.urlencoded({ extended: true, limit: '1mb' }));
 server.use(
   '/images',
   express.static(resolve(__dirname, '..', 'tmp', 'uploads')),
 );
 server.use('/pdf', express.static(resolve(__dirname, '..', 'tmp', 'uploads')));
-server.use(express.json());
+server.use(
+  '/audios',
+  express.static(resolve(__dirname, '..', 'tmp', 'uploads')),
+);
+server.use(express.json({ limit: '1mb' }));
 
 server.use(route);
 

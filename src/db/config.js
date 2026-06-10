@@ -1,11 +1,15 @@
 require('dotenv').config(); // Certifique-se de instalar o pacote dotenv
 const { Pool } = require('pg');
 
+// const pool = new Pool({
+//   connectionString: process.env.DATABASE_URL, // Use variável de ambiente para a URL de conexão
+//   ssl: {
+//     rejectUnauthorized: true,
+//   },
+// });
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL, // Use variável de ambiente para a URL de conexão
-  ssl: {
-    rejectUnauthorized: true,
-  },
+  connectionString: process.env.DATABASE_URL,
+  ssl: false,
 });
 
 pool.connect((err, client, release) => {

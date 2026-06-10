@@ -38,7 +38,7 @@ module.exports = {
   dest: path.resolve(__dirname, '..', '..', 'tmp', 'uploads'),
   storage: storageTypes[process.env.STORAGE_TYPE],
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB máximo
+    fileSize: 15 * 1024 * 1024, // 15MB máximo
   },
   fileFilter: (req, file, cb) => {
     const allowedMimes = [

@@ -6,11 +6,15 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Configuração do Pool de conexão
+// const pool = new Pool({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false, // Apenas se estiver usando SSL localmente
+//   },
+// });
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Apenas se estiver usando SSL localmente
-  },
+  ssl: false,
 });
 
 module.exports = {
@@ -205,24 +209,20 @@ module.exports = {
       const values = [email];
       const { rows } = await client.query(query, values);
       client.release();
-      if (rows.length === 0) {
-        return '';
-      } else {
-        return rows.map((autor) => ({
-          id: autor.id,
-          nome: autor.nome,
-          profissao: autor.profissao,
-          email: autor.email,
-          endereco_foto: autor.endereco_foto,
-          biografia: autor.biografia,
-          genero: autor.genero,
-          cor_de_pele: autor.cor_de_pele,
-          id_cidade: autor.id_cidade,
-          adm: autor.adm,
-          aprovado: autor.aprovado,
-          password: autor.password,
-        }));
-      }
+      return rows.map((autor) => ({
+        id: autor.id,
+        nome: autor.nome,
+        profissao: autor.profissao,
+        email: autor.email,
+        endereco_foto: autor.endereco_foto,
+        biografia: autor.biografia,
+        genero: autor.genero,
+        cor_de_pele: autor.cor_de_pele,
+        id_cidade: autor.id_cidade,
+        adm: autor.adm,
+        aprovado: autor.aprovado,
+        password: autor.password,
+      }));
     } catch (error) {
       console.error('Error fetching autor by email:', error);
       throw error;

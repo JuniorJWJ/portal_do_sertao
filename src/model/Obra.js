@@ -6,11 +6,15 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Configuração do Pool de conexão
+// const pool = new Pool({
+//   connectionString: process.env.DATABASE_URL,
+//   ssl: {
+//     rejectUnauthorized: false, // Apenas se estiver usando SSL localmente
+//   },
+// });
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Apenas se estiver usando SSL localmente
-  },
+  ssl: false,
 });
 
 module.exports = {
@@ -67,7 +71,6 @@ module.exports = {
     try {
       const client = await pool.connect();
       const id = uuidv4();
-      // console.log(id);
       const query = `
             INSERT INTO obra (
                 id,
@@ -90,7 +93,6 @@ module.exports = {
         newObra.endereco_pdf || '', // Certifique-se de que endereco_pdf nunca seja null
         newObra.endereco_audio || '',
       ];
-      //console.log(values);
       await client.query(query, values);
       client.release();
     } catch (error) {
@@ -115,7 +117,7 @@ module.exports = {
   },
 
   async update(updatedObra, obraId) {
-    console.log("updatedObra dentro do Obra.js:", updatedObra);
+    console.log('updatedObra dentro do Obra.js:', updatedObra);
     try {
       const client = await pool.connect();
       const query = `
@@ -167,6 +169,7 @@ module.exports = {
   },
 
   async show(obraId) {
+    console.log("obraId dentro do ObraJs", obraId);
     try {
       const client = await pool.connect();
       const query = `
@@ -175,6 +178,8 @@ module.exports = {
       const values = [obraId];
       const { rows } = await client.query(query, values);
       client.release();
+      console.log("rows: " + rows)
+      // console.log("obra dentro do model:",obra)
       return rows.map((obra) => ({
         id: obra.id,
         nome: obra.nome,

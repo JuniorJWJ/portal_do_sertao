@@ -2,10 +2,16 @@ const Autor = require('../model/Autor');
 const Cidade = require('../model/Cidade');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const aws = require('aws-sdk');
+const appApiUrl = (process.env.APP_API_URL || '').replace(/\/$/, '');
 
-const s3 = new aws.S3();
+function getBearerToken(req) {
+  const authHeader = req.headers.authorization || '';
+  const [scheme, token] = authHeader.split(' ');
+  if (scheme !== 'Bearer' || !token) {
+    return null;
+  }
+  return token;
+}
 
 module.exports = {
   async get(req, res) {
@@ -15,9 +21,39 @@ module.exports = {
   },
 
   async get_all(req, res) {
-    const autor = await Autor.get_all();
-    const cidade = await Cidade.get();
-    return res.json({ autor: autor, cidade: cidade });
+    const token = getBearerToken(req);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: true, message: 'Token nao fornecido!' });
+    }
+
+    const jwtSecret = process.env.TOKEN_JWT;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        error: true,
+        message: 'Erro de configuracao do servidor.',
+      });
+    }
+
+    try {
+      const decodedToken = jwt.verify(token, jwtSecret);
+      if (decodedToken.adm !== 1) {
+        return res.status(403).json({
+          error: true,
+          message: 'Acesso restrito a administradores.',
+        });
+      }
+
+      const autor = await Autor.get_all();
+      const cidade = await Cidade.get();
+      return res.json({ autor: autor, cidade: cidade });
+    } catch (error) {
+      return res.status(401).json({
+        error: true,
+        message: 'Token invalido!',
+      });
+    }
   },
 
   async create(req, res) {
@@ -33,7 +69,7 @@ module.exports = {
       !req.file
     ) {
       return res
-        .status(500)
+        .status(400)
         .json({ msg: 'Preencha todos os dados para completar o cadastro' });
     }
 
@@ -42,9 +78,9 @@ module.exports = {
     let fotoUrl = '';
     if (req.file) {
       if (process.env.STORAGE_TYPE === 's3') {
-        fotoUrl = req.file.location; // URL da imagem no S3
+        fotoUrl = req.file.location;
       } else {
-        fotoUrl = `${process.env.APP_API_URL}/images/${req.file.filename}`;
+        fotoUrl = `${appApiUrl}/images/${req.file.filename}`;
       }
     }
 
@@ -61,10 +97,10 @@ module.exports = {
     };
 
     const existAutor = await Autor.show_email(autor.email);
-    if (existAutor) {
-      return res.status(200).json({
-        erro: false,
-        mensagem: 'Já existe um autor com esse email!',
+    if (existAutor.length > 0) {
+      return res.status(409).json({
+        erro: true,
+        mensagem: 'Ja existe um autor com esse email!',
       });
     }
 
@@ -72,136 +108,254 @@ module.exports = {
       await Autor.create(autor);
       res.status(201).json({ msg: 'Autor registrado com sucesso!' });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).json({ msg: 'Erro ao registrar o autor no sistema!' });
     }
   },
   async delete(req, res) {
     const autorId = req.params.id;
 
-    if (autorId === '' || autorId == undefined) {
+    if (!autorId) {
       return res.status(400).json({
         erro: true,
         mensagem: 'Insira um ID correto!',
       });
     }
 
-    try {
-      const autor = await Autor.show(autorId);
-      // console.log(autor);
+    const token = getBearerToken(req);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: true, message: 'Token nao fornecido!' });
+    }
 
-      if (autor.length === 0) {
-        return res.status(400).json({
-          erro: true,
-          mensagem: 'Nenhum autor encontrado!',
+    const jwtSecret = process.env.TOKEN_JWT;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        error: true,
+        message: 'Erro de configuracao do servidor.',
+      });
+    }
+
+    try {
+      const decodedToken = jwt.verify(token, jwtSecret);
+      const authenticatedAutorId = decodedToken.id;
+
+      const autorToDelete = await Autor.show(autorId);
+      const authenticatedAutor = await Autor.show(authenticatedAutorId);
+
+      if (autorToDelete.length === 0) {
+        return res.status(404).json({
+          error: true,
+          message: 'Nenhum autor encontrado para deletar!',
         });
       }
 
-      await Autor.delete(autorId);
-      res.status(200).json({ msg: 'Autor deletado com sucesso' });
+      if (authenticatedAutor.length === 0) {
+        return res.status(404).json({
+          error: true,
+          message: 'Nenhum autor autenticado encontrado!',
+        });
+      }
+
+      if (authenticatedAutor[0].adm === 1) {
+        await Autor.delete(autorId);
+        return res.status(200).json({ msg: 'Autor deletado com sucesso' });
+      }
+
+      return res.status(403).json({
+        error: true,
+        message: 'Voce nao tem permissao para deletar esse autor.',
+      });
     } catch (error) {
-      res.status(500).json({ msg: 'Falha ao deletar o autor' });
+      console.error('Erro ao processar a solicitacao:', error);
+
+      if (error instanceof jwt.JsonWebTokenError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token invalido!' });
+      }
+      if (error instanceof jwt.TokenExpiredError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token expirado!' });
+      }
+
+      return res
+        .status(500)
+        .json({ msg: 'Falha ao processar a solicitacao' });
     }
   },
+
   async update(req, res) {
     const autorId = req.params.id;
-    // console.log(autorId);
 
-    if (req.file) {
-      if (process.env.STORAGE_TYPE === 's3') {
-        fotoUrl = req.file.location; // URL da imagem no S3
-      } else {
-        fotoUrl = `${process.env.APP_API_URL}/images/${req.file.filename}`;
-      }
-    }
-
-    const updatedAutor = {
-      nome: req.body.nome,
-      profissao: req.body.profissao,
-      biografia: req.body.biografia,
-      email: req.body.email,
-      id_cidade: req.body.id_cidade,
-      genero: req.body.genero,
-      cor_de_pele: req.body.cor_de_pele,
-      endereco_foto: req.file ? fotoUrl : '',
-    };
-
-    if (autorId === '' || autorId == undefined) {
+    if (!autorId) {
       return res.status(400).json({
         erro: true,
         mensagem: 'Insira um ID correto!',
       });
     }
 
+    const token = getBearerToken(req);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: true, message: 'Token nao fornecido!' });
+    }
+
+    const jwtSecret = process.env.TOKEN_JWT;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        error: true,
+        message: 'Erro de configuracao do servidor.',
+      });
+    }
+
     try {
-      const autor = await Autor.show(autorId);
-      // console.log(autor);
+      const decodedToken = jwt.verify(token, jwtSecret);
+      const authenticatedAutorId = decodedToken.id;
 
-      if (autor.length === 0) {
-        return res.status(400).json({
+      const [authenticatedAutor] = await Autor.show(authenticatedAutorId);
+      const [autorToUpdate] = await Autor.show(autorId);
+
+      if (!autorToUpdate) {
+        return res.status(404).json({
           erro: true,
-          mensagem: 'Nenhum autor encontrado!',
+          mensagem: 'Autor a ser atualizado nao encontrado!',
         });
       }
 
-      if (!updatedAutor.endereco_foto) {
-        const AutorBDteste = await Autor.show(autorId);
-        updatedAutor.endereco_foto = AutorBDteste[0].endereco_foto;
-      }
-
-      // console.log(updatedAutor, "id = " + autorId);
-
-      try {
-        await Autor.update(updatedAutor, autorId);
-        res.status(201).json({ msg: 'Autor atualizado com sucesso!' });
-      } catch (error) {
-        return res.status(400).json({
+      if (!authenticatedAutor) {
+        return res.status(404).json({
           erro: true,
-          mensagem: 'Erro ao buscar autor!',
+          mensagem: 'Autor autenticado nao encontrado!',
         });
       }
+
+      if (
+        authenticatedAutor.id !== autorToUpdate.id &&
+        authenticatedAutor.adm !== 1
+      ) {
+        return res.status(403).json({
+          error: true,
+          message: 'Voce nao tem permissao para atualizar este autor.',
+        });
+      }
+
+      let fotoUrl = '';
+      if (req.file) {
+        fotoUrl =
+          process.env.STORAGE_TYPE === 's3'
+            ? req.file.location
+            : `${appApiUrl}/images/${req.file.filename}`;
+      }
+
+      const updatedAutor = {
+        nome: req.body.nome || autorToUpdate.nome,
+        profissao: req.body.profissao || autorToUpdate.profissao,
+        biografia: req.body.biografia || autorToUpdate.biografia,
+        email: req.body.email || autorToUpdate.email,
+        id_cidade: req.body.id_cidade || autorToUpdate.id_cidade,
+        genero: req.body.genero || autorToUpdate.genero,
+        cor_de_pele: req.body.cor_de_pele || autorToUpdate.cor_de_pele,
+        endereco_foto: req.file ? fotoUrl : autorToUpdate.endereco_foto,
+      };
+
+      await Autor.update(updatedAutor, autorId);
+      return res.status(200).json({ msg: 'Autor atualizado com sucesso!' });
     } catch (error) {
-      return res.status(400).json({
-        erro: true,
-        mensagem: 'Erro ao buscar autor!',
+      console.error('Erro no processo de atualizacao:', error);
+
+      if (error instanceof jwt.JsonWebTokenError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token invalido!' });
+      }
+      if (error instanceof jwt.TokenExpiredError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token expirado!' });
+      }
+
+      return res.status(500).json({
+        error: true,
+        message: 'Erro interno no servidor ao processar a atualizacao',
       });
     }
   },
   async approv(req, res) {
     const autorId = req.params.id;
-    console.log(autorId);
 
-    if (autorId === '' || autorId == undefined) {
+    if (!autorId) {
       return res.status(400).json({
         erro: true,
         mensagem: 'Insira um ID correto!',
       });
     }
 
+    const token = getBearerToken(req);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: true, message: 'Token nao fornecido!' });
+    }
+
+    const jwtSecret = process.env.TOKEN_JWT;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        error: true,
+        message: 'Erro de configuracao do servidor.',
+      });
+    }
+
     try {
-      const autor = await Autor.show(autorId);
-      // console.log(autor);
+      const decodedToken = jwt.verify(token, jwtSecret);
+      const authenticatedAutorId = decodedToken.id;
 
-      if (autor.length === 0) {
-        return res.status(400).json({
+      const [authenticatedAutor] = await Autor.show(authenticatedAutorId);
+      const [autorToApprov] = await Autor.show(autorId);
+
+      if (!autorToApprov) {
+        return res.status(404).json({
           erro: true,
-          mensagem: 'Nenhum autor encontrado!',
+          mensagem: 'Nenhum autor encontrado para aprovacao!',
         });
       }
 
-      try {
-        await Autor.approv(autorId);
-        res.status(201).json({ msg: 'Autor aprovado com sucesso!' });
-      } catch (error) {
-        return res.status(400).json({
+      if (!authenticatedAutor) {
+        return res.status(404).json({
           erro: true,
-          mensagem: 'Erro ao buscar autor!',
+          mensagem: 'Autor autenticado nao encontrado!',
         });
       }
+
+      if (authenticatedAutor.adm !== 1) {
+        return res.status(403).json({
+          error: true,
+          message: 'Apenas administradores podem aprovar autores!',
+        });
+      }
+
+      await Autor.approv(autorId);
+      return res.status(200).json({ msg: 'Autor aprovado com sucesso!' });
     } catch (error) {
-      return res.status(400).json({
-        erro: true,
-        mensagem: 'Erro ao buscar autor!',
+      console.error('Erro no processo de aprovacao:', error);
+
+      if (error instanceof jwt.JsonWebTokenError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token invalido!' });
+      }
+      if (error instanceof jwt.TokenExpiredError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token expirado!' });
+      }
+
+      return res.status(500).json({
+        error: true,
+        message: 'Erro interno no servidor ao processar a aprovacao',
       });
     }
   },
@@ -270,78 +424,101 @@ module.exports = {
     }
   },
   async log_user(req, res) {
-    if (!req.body.email) {
-      return res.status(400).json({
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ error: true, message: 'Preencha todos os campos!' });
+    }
+
+    try {
+      const user = await Autor.show_email(email);
+      if (!user || user.length === 0) {
+        return res.status(400).json({
+          erro: true,
+          mensagem: 'Erro: Usuario ou senha incorreta!',
+        });
+      }
+
+      if (user[0].aprovado == 0) {
+        return res.status(400).json({
+          erro: true,
+          mensagem: 'Erro: Esse usuario ainda nao foi aprovado.',
+        });
+      }
+
+      if (!(await bcrypt.compare(password, user[0].password))) {
+        return res.status(400).json({
+          erro: true,
+          mensagem: 'Erro: Usuario ou senha incorreta!',
+        });
+      }
+
+      const jwtSecret = process.env.TOKEN_JWT;
+      if (!jwtSecret) {
+        return res.status(500).json({
+          erro: true,
+          mensagem: 'Erro de configuracao do servidor.',
+        });
+      }
+
+      const token = jwt.sign(
+        { id: user[0].id, adm: user[0].adm },
+        jwtSecret,
+        { expiresIn: '30m' },
+      );
+
+      return res.json({
+        erro: false,
+        mensagem: 'Login realizado com sucesso!',
+        token,
+        id: user[0].id,
+        adm: user[0].adm,
+      });
+    } catch (error) {
+      return res.status(500).json({
         erro: true,
-        mensagem: 'Erro: Insira um Email válido!',
+        mensagem: 'Erro ao processar login!',
       });
     }
-    const userEmail = req.body.email;
-    const user = await Autor.show_email(userEmail);
-    // console.log(req.body);
-    // console.log(user);
-    if (user == null || user.length === 0) {
-      // console.log("entrou");
-      return res.status(400).json({
-        erro: true,
-        mensagem:
-          'Erro: Usuário ou a senha incorreta! Nenhum usuário com este e-mail',
-      });
-    }
-    console.log(user[0]);
-    if (!(await bcrypt.compare(req.body.password, user[0].password))) {
-      return res.status(400).json({
-        erro: true,
-        mensagem: 'Erro: Usuário ou a senha incorreta! Senha incorreta!',
-      });
-    }
-    var token = jwt.sign(
-      { id: user[0].id, adm: user[0].adm },
-      `${process.env.TOKEN_JWT}`,
-      {
-        expiresIn: '30m',
-      },
-    );
-    return res.json({
-      erro: false,
-      mensagem: 'Login realizado com sucesso!',
-      token,
-      id: user[0].id,
-      adm: user[0].adm,
-    });
   },
   async profile(req, res) {
-    const authorization = req.headers.authorization; // Obtém o token JWT do header
-    const token = authorization.split(' ')[1];
-    const decodedToken = jwt.verify(token, 'D62ST92Y7A6V7K5C6W9ZU6W8KS3');
-    console.log(decodedToken.id);
-    // const autorId = decodedToken.id; // Obtém o ID do usuário a partir do token decodificado
-    // console.log(token);
-    try {
-      const decodedToken = jwt.verify(token, 'D62ST92Y7A6V7K5C6W9ZU6W8KS3');
-      const autorId = decodedToken.id; // Obtém o ID do usuário a partir do token decodificado
-      console.log('autorID:', autorId);
+    const autorId = req.userId;
 
+    if (!autorId) {
+      return res
+        .status(401)
+        .json({ erro: true, mensagem: 'Token nao fornecido!' });
+    }
+
+    try {
       const autor = await Autor.show(autorId);
-      console.log(autor);
 
       if (autor.length === 0) {
-        return res.status(400).json({
+        return res.status(404).json({
           erro: true,
           mensagem: 'Nenhum autor encontrado!',
         });
       }
 
-      // Retorna os dados do usuário logado
       return res.status(200).json({
         erro: false,
-        autor: autor[0], // Supondo que a função 'show' retorna um array de autores, pegamos o primeiro elemento
+        autor: autor[0],
       });
     } catch (error) {
       return res.status(500).json({
         erro: true,
-        mensagem: 'Erro1 ao buscar autor!',
+        mensagem: 'Erro ao buscar autor!',
       });
     }
   },
 };
+
+
+
+
+
+
+
+

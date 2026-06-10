@@ -5,7 +5,10 @@
   "main": "src/server.js",
   "scripts": {
     "start": "nodemon .",
+    "dev": "nodemon src/server.js",
     "init-db": "node src/db/init.js",
+    "seed": "node src/db/seed.js",
+    "setup-local": "npm run init-db && npm run seed",
     "format": "prettier --write .",
     "insert-db": "node src/db/insertCidadeGenero.js && node src/db/insertAutor.js"
   },

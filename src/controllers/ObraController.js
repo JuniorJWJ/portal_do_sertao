@@ -1,11 +1,16 @@
 const Obra = require('../model/Obra');
 const Autor = require('../model/Autor');
-const GeneroLiterario = require('../model/GeneroLiterario');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const aws = require('aws-sdk');
+const appApiUrl = (process.env.APP_API_URL || '').replace(/\/$/, '');
 
-const s3 = new aws.S3();
+function getBearerToken(req) {
+  const authHeader = req.headers.authorization || '';
+  const [scheme, token] = authHeader.split(' ');
+  if (scheme !== 'Bearer' || !token) {
+    return null;
+  }
+  return token;
+}
 
 module.exports = {
   async get(req, res) {
@@ -13,60 +18,114 @@ module.exports = {
     return res.json({ obra: obra });
   },
   async get_all(req, res) {
-    const obra = await Obra.getAll();
-    return res.json({ obra: obra });
+    const token = getBearerToken(req);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: true, message: 'Token nao fornecido!' });
+    }
+
+    const jwtSecret = process.env.TOKEN_JWT;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        error: true,
+        message: 'Erro de configuracao do servidor.',
+      });
+    }
+
+    try {
+      const decodedToken = jwt.verify(token, jwtSecret);
+      if (decodedToken.adm !== 1) {
+        return res.status(403).json({
+          error: true,
+          message: 'Acesso restrito a administradores.',
+        });
+      }
+
+      const obra = await Obra.getAll();
+      return res.json({ obra: obra });
+    } catch (error) {
+      return res.status(401).json({
+        error: true,
+        message: 'Token invalido!',
+      });
+    }
   },
   async create(req, res) {
-    // console.log(req.files); // Log correto para debugar os arquivos
-
     let pdfUrl = '';
     let audioUrl = '';
 
-    // Verificação de arquivos
+    const token = getBearerToken(req);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: true, message: 'Token nao fornecido!' });
+    }
+
+    const jwtSecret = process.env.TOKEN_JWT;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        error: true,
+        message: 'Erro de configuracao do servidor.',
+      });
+    }
+
+    let idAutor = '';
+
+    try {
+      const decodedToken = jwt.verify(token, jwtSecret);
+      const authenticatedAutorId = decodedToken.id;
+      const autor = await Autor.show(authenticatedAutorId);
+
+      if (!autor || autor.length === 0) {
+        return res.status(404).json({
+          error: true,
+          message: 'Nenhum autor encontrado!',
+        });
+      }
+
+      idAutor = autor[0].id;
+    } catch (error) {
+      return res.status(401).json({
+        error: true,
+        message: 'Token invalido!',
+      });
+    }
+
     if (req.files) {
-      // Se estiver usando S3
-      // console.log("req.files:", req.files);
       if (req.files.file && req.files.file.length > 0) {
         if (process.env.STORAGE_TYPE === 's3') {
-          pdfUrl = req.files.file[0].location; // URL gerada pelo S3
+          pdfUrl = req.files.file[0].location;
         } else {
-          pdfUrl = req.files.file[0].path; // Caminho do arquivo local
+          pdfUrl = `${appApiUrl}/pdf/${req.files.file[0].filename}`;
         }
       }
 
       if (req.files.audioFile && req.files.audioFile.length > 0) {
         if (process.env.STORAGE_TYPE === 's3') {
-          audioUrl = req.files.audioFile[0].location; // URL gerada pelo S3
+          audioUrl = req.files.audioFile[0].location;
         } else {
-          audioUrl = req.files.audioFile[0].path; // Caminho do arquivo local
+          audioUrl = `${appApiUrl}/audios/${req.files.audioFile[0].filename}`;
         }
       }
     }
 
-    // Verifique se os campos obrigatórios estão presentes
-    if (
-      !req.body.nome ||
-      !req.body.select_autor ||
-      !req.body.select_genero_literario ||
-      !pdfUrl // O PDF é obrigatório
-    ) {
+    if (!req.body.nome || !req.body.select_genero_literario || !pdfUrl) {
       return res
         .status(400)
         .json({ msg: 'Preencha todos os dados para completar o cadastro.' });
     }
-    // console.log("req.body:",req.body)
+
     const obra = {
       nome: req.body.nome,
-      id_autor: req.body.select_autor,
+      id_autor: idAutor,
       id_genero_literario: req.body.select_genero_literario,
       endereco_pdf: pdfUrl,
-      endereco_video: req.body.endereco_video,
-      endereco_audio: audioUrl || null, // Audio é opcional
+      endereco_video: req.body.endereco_video || null,
+      endereco_audio: audioUrl || null,
     };
-    // console.log("obra:", obra)
 
     try {
-      // Cria a obra no banco de dados
       await Obra.create(obra);
       res.status(201).json({ msg: 'Obra registrada com sucesso!', obra });
     } catch (error) {
@@ -76,67 +135,82 @@ module.exports = {
   },
   async delete(req, res) {
     const obraId = req.params.id;
-
-    if (obraId === '' || obraId == undefined) {
+    if (!obraId) {
       return res.status(400).json({
         erro: true,
         mensagem: 'Insira um ID correto!',
       });
     }
 
-    try {
-      const obra = await Obra.show(obraId);
-      // console.log(obra);
+    const token = getBearerToken(req);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: true, message: 'Token nao fornecido!' });
+    }
 
-      if (obra.length === 0) {
-        return res.status(400).json({
+    const jwtSecret = process.env.TOKEN_JWT;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        error: true,
+        message: 'Erro de configuracao do servidor.',
+      });
+    }
+
+    try {
+      const decodedToken = jwt.verify(token, jwtSecret);
+      const authenticatedAutorId = decodedToken.id;
+      const [authenticatedAutor] = await Autor.show(authenticatedAutorId);
+      const [obraToDelete] = await Obra.show(obraId);
+
+      if (!obraToDelete) {
+        return res.status(404).json({
           erro: true,
-          mensagem: 'Nenhum obra encontrado!',
+          mensagem: 'Obra nao encontrada!',
         });
       }
 
-      await Obra.delete(obraId);
-      res.status(200).json({ msg: 'Obra deletado com sucesso' });
+      if (!authenticatedAutor) {
+        return res.status(404).json({
+          erro: true,
+          mensagem: 'Autor autenticado nao encontrado!',
+        });
+      }
+
+      if (
+        authenticatedAutor.id === obraToDelete.id_autor ||
+        authenticatedAutor.adm === 1
+      ) {
+        await Obra.delete(obraId);
+        return res.status(200).json({ msg: 'Obra excluida com sucesso!' });
+      }
+
+      return res.status(403).json({
+        error: true,
+        message: 'Voce nao tem permissao para excluir esta obra!',
+      });
     } catch (error) {
-      res.status(500).json({ msg: 'Falha ao deletar o obra' });
+      console.error('Erro no processo de exclusao:', error);
+
+      if (error instanceof jwt.JsonWebTokenError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token invalido!' });
+      }
+      if (error instanceof jwt.TokenExpiredError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token expirado!' });
+      }
+
+      return res.status(500).json({
+        error: true,
+        message: 'Erro interno no servidor ao processar a exclusao',
+      });
     }
   },
   async update(req, res) {
-    console.log("chegou aqui")
     const obraId = req.params.id;
-    let pdfUrl = '';
-    let audioUrl = '';
-    console.log("req.files: ", req.files)
-    if (req.files) {
-      // Se estiver usando S3
-      // console.log("req.files:", req.files);
-      if (req.files.file && req.files.file.length > 0) {
-        if (process.env.STORAGE_TYPE === 's3') {
-          pdfUrl = req.files.file[0].location; // URL gerada pelo S3
-        } else {
-          pdfUrl = req.files.file[0].path; // Caminho do arquivo local
-        }
-      }
-
-      if (req.files.audioFile && req.files.audioFile.length > 0) {
-        if (process.env.STORAGE_TYPE === 's3') {
-          audioUrl = req.files.audioFile[0].location; // URL gerada pelo S3
-        } else {
-          audioUrl = req.files.audioFile[0].path; // Caminho do arquivo local
-        }
-      }
-    }
-
-    var updatedObra = {
-      nome: req.body.nome,
-      id_autor: req.body.select_autor,
-      id_genero_literario: req.body.select_genero_literario,
-      endereco_pdf: pdfUrl || '', // Usa o valor de pdfUrl se houver, ou mantém string vazia
-      endereco_audio: audioUrl || '', // Usa o valor de audioUrl se houver, ou mantém string vazia
-      endereco_video: req.body.endereco_video,
-    };
-
-    console.log('updatedObra: ', updatedObra);
 
     if (!obraId) {
       return res.status(400).json({
@@ -145,74 +219,178 @@ module.exports = {
       });
     }
 
+    const token = getBearerToken(req);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: true, message: 'Token nao fornecido!' });
+    }
+
+    const jwtSecret = process.env.TOKEN_JWT;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        error: true,
+        message: 'Erro de configuracao do servidor.',
+      });
+    }
+
     try {
-      const obra = await Obra.show(obraId);
-      console.log('meio:', obra);
+      const decodedToken = jwt.verify(token, jwtSecret);
+      const authenticatedAutorId = decodedToken.id;
 
-      if (obra.length === 0) {
-        return res.status(400).json({
+      const [authenticatedAutor] = await Autor.show(authenticatedAutorId);
+      const [obraToUpdate] = await Obra.show(obraId);
+
+      if (!obraToUpdate) {
+        return res.status(404).json({
           erro: true,
-          mensagem: 'Nenhuma obra encontrada!',
+          mensagem: 'Obra a ser atualizada nao encontrada!',
         });
       }
 
-      if (!updatedObra.endereco_pdf) {
-        updatedObra.endereco_pdf = obra[0].endereco_pdf; // Preserva o PDF original se não houver novo
-      }
-
-      if (!updatedObra.endereco_audio) {
-        updatedObra.endereco_audio = obra[0].endereco_audio; // Preserva o áudio original se não houver novo
-      }
-      console.log("updatedObra um pouco antes de atualizar:", updatedObra)
-      try {
-        await Obra.update(updatedObra, obraId);
-        res.status(201).json({ msg: 'Obra atualizada com sucesso!' });
-      } catch (error) {
-        return res.status(400).json({
+      if (!authenticatedAutor) {
+        return res.status(404).json({
           erro: true,
-          mensagem: 'Erro ao atualizar a obra!',
+          mensagem: 'Autor autenticado nao encontrado!',
         });
       }
+
+      if (
+        authenticatedAutor.id !== obraToUpdate.id_autor &&
+        authenticatedAutor.adm !== 1
+      ) {
+        return res.status(403).json({
+          error: true,
+          message: 'Voce nao tem permissao para atualizar esta obra.',
+        });
+      }
+
+      let pdfUrl = obraToUpdate.endereco_pdf;
+      let audioUrl = obraToUpdate.endereco_audio;
+
+      if (req.files) {
+        if (req.files.file && req.files.file.length > 0) {
+          pdfUrl =
+            process.env.STORAGE_TYPE === 's3'
+              ? req.files.file[0].location
+              : `${appApiUrl}/pdf/${req.files.file[0].filename}`;
+        }
+
+        if (req.files.audioFile && req.files.audioFile.length > 0) {
+          audioUrl =
+            process.env.STORAGE_TYPE === 's3'
+              ? req.files.audioFile[0].location
+              : `${appApiUrl}/audios/${req.files.audioFile[0].filename}`;
+        }
+      }
+
+      const updatedObra = {
+        nome: req.body.nome || obraToUpdate.nome,
+        id_autor:
+          authenticatedAutor.adm === 1 && req.body.select_autor
+            ? req.body.select_autor
+            : obraToUpdate.id_autor,
+        id_genero_literario:
+          req.body.select_genero_literario || obraToUpdate.id_genero_literario,
+        endereco_pdf: pdfUrl,
+        endereco_audio: audioUrl,
+        endereco_video: req.body.endereco_video || obraToUpdate.endereco_video,
+      };
+
+      await Obra.update(updatedObra, obraId);
+      return res.status(200).json({ msg: 'Obra atualizada com sucesso!' });
     } catch (error) {
-      return res.status(400).json({
-        erro: true,
-        mensagem: 'Erro ao buscar obra!',
+      console.error('Erro no processo de atualizacao:', error);
+
+      if (error instanceof jwt.JsonWebTokenError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token invalido!' });
+      }
+      if (error instanceof jwt.TokenExpiredError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token expirado!' });
+      }
+
+      return res.status(500).json({
+        error: true,
+        message: 'Erro interno no servidor ao processar a atualizacao',
       });
     }
   },
   async approv(req, res) {
     const obraId = req.params.id;
 
-    if (obraId === '' || obraId == undefined) {
+    if (!obraId) {
       return res.status(400).json({
         erro: true,
         mensagem: 'Insira um ID correto!',
       });
     }
 
+    const token = getBearerToken(req);
+    if (!token) {
+      return res
+        .status(401)
+        .json({ error: true, message: 'Token nao fornecido!' });
+    }
+
+    const jwtSecret = process.env.TOKEN_JWT;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        error: true,
+        message: 'Erro de configuracao do servidor.',
+      });
+    }
+
     try {
-      const obra = await Obra.show(obraId);
+      const decodedToken = jwt.verify(token, jwtSecret);
+      const authenticatedAutorId = decodedToken.id;
 
-      if (obra.length === 0) {
-        return res.status(400).json({
+      const [authenticatedAutor] = await Autor.show(authenticatedAutorId);
+
+      if (!authenticatedAutor) {
+        return res.status(404).json({
           erro: true,
-          mensagem: 'Nenhuma obra encontrada!',
+          mensagem: 'Autor autenticado nao encontrado!',
         });
       }
 
-      try {
-        await Obra.approv(obraId);
-        res.status(201).json({ msg: 'Obra aprovada com sucesso!' });
-      } catch (error) {
-        return res.status(400).json({
-          erro: true,
-          mensagem: 'Erro ao buscar obra!',
+      if (authenticatedAutor.adm !== 1) {
+        return res.status(403).json({
+          error: true,
+          message: 'Apenas administradores podem aprovar obras!',
         });
       }
+
+      const [obra] = await Obra.show(obraId);
+      if (!obra) {
+        return res.status(404).json({
+          erro: true,
+          mensagem: 'Nenhuma obra encontrada para aprovacao!',
+        });
+      }
+
+      await Obra.approv(obraId);
+      return res.status(200).json({ msg: 'Obra aprovada com sucesso!' });
     } catch (error) {
-      return res.status(400).json({
-        erro: true,
-        mensagem: 'Erro ao buscar obra!',
+      console.error('Erro no processo de aprovacao:', error);
+
+      if (error instanceof jwt.JsonWebTokenError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token invalido!' });
+      }
+      if (error instanceof jwt.TokenExpiredError) {
+        return res
+          .status(401)
+          .json({ error: true, message: 'Token expirado!' });
+      }
+
+      return res.status(500).json({
+        error: true,
+        message: 'Erro interno no servidor ao processar a aprovacao',
       });
     }
   },
@@ -318,3 +496,7 @@ module.exports = {
 };
 
 //obra backup
+
+
+
+
