@@ -25,14 +25,14 @@ module.exports = {
     if (!token) {
       return res
         .status(401)
-        .json({ error: true, message: 'Token nao fornecido!' });
+        .json({ error: true, message: 'Token não fornecido!' });
     }
 
     const jwtSecret = process.env.TOKEN_JWT;
     if (!jwtSecret) {
       return res.status(500).json({
         error: true,
-        message: 'Erro de configuracao do servidor.',
+        message: 'Erro de configuração do servidor.',
       });
     }
 
@@ -51,7 +51,7 @@ module.exports = {
     } catch (error) {
       return res.status(401).json({
         error: true,
-        message: 'Token invalido!',
+        message: 'Token inválido!',
       });
     }
   },
@@ -100,7 +100,7 @@ module.exports = {
     if (existAutor.length > 0) {
       return res.status(409).json({
         erro: true,
-        mensagem: 'Ja existe um autor com esse email!',
+        mensagem: 'J? existe um autor com esse e-mail!',
       });
     }
 
@@ -126,14 +126,14 @@ module.exports = {
     if (!token) {
       return res
         .status(401)
-        .json({ error: true, message: 'Token nao fornecido!' });
+        .json({ error: true, message: 'Token não fornecido!' });
     }
 
     const jwtSecret = process.env.TOKEN_JWT;
     if (!jwtSecret) {
       return res.status(500).json({
         error: true,
-        message: 'Erro de configuracao do servidor.',
+        message: 'Erro de configuração do servidor.',
       });
     }
 
@@ -165,15 +165,15 @@ module.exports = {
 
       return res.status(403).json({
         error: true,
-        message: 'Voce nao tem permissao para deletar esse autor.',
+        message: 'Você não tem permissão para deletar esse autor.',
       });
     } catch (error) {
-      console.error('Erro ao processar a solicitacao:', error);
+      console.error('Erro ao processar a solicitação:', error);
 
       if (error instanceof jwt.JsonWebTokenError) {
         return res
           .status(401)
-          .json({ error: true, message: 'Token invalido!' });
+          .json({ error: true, message: 'Token inválido!' });
       }
       if (error instanceof jwt.TokenExpiredError) {
         return res
@@ -183,7 +183,7 @@ module.exports = {
 
       return res
         .status(500)
-        .json({ msg: 'Falha ao processar a solicitacao' });
+        .json({ msg: 'Falha ao processar a solicitação' });
     }
   },
 
@@ -201,14 +201,14 @@ module.exports = {
     if (!token) {
       return res
         .status(401)
-        .json({ error: true, message: 'Token nao fornecido!' });
+        .json({ error: true, message: 'Token não fornecido!' });
     }
 
     const jwtSecret = process.env.TOKEN_JWT;
     if (!jwtSecret) {
       return res.status(500).json({
         error: true,
-        message: 'Erro de configuracao do servidor.',
+        message: 'Erro de configuração do servidor.',
       });
     }
 
@@ -222,14 +222,14 @@ module.exports = {
       if (!autorToUpdate) {
         return res.status(404).json({
           erro: true,
-          mensagem: 'Autor a ser atualizado nao encontrado!',
+          mensagem: 'Autor a ser atualizado não encontrado!',
         });
       }
 
       if (!authenticatedAutor) {
         return res.status(404).json({
           erro: true,
-          mensagem: 'Autor autenticado nao encontrado!',
+          mensagem: 'Autor autenticado não encontrado!',
         });
       }
 
@@ -239,7 +239,7 @@ module.exports = {
       ) {
         return res.status(403).json({
           error: true,
-          message: 'Voce nao tem permissao para atualizar este autor.',
+          message: 'Você não tem permissão para atualizar este autor.',
         });
       }
 
@@ -265,12 +265,12 @@ module.exports = {
       await Autor.update(updatedAutor, autorId);
       return res.status(200).json({ msg: 'Autor atualizado com sucesso!' });
     } catch (error) {
-      console.error('Erro no processo de atualizacao:', error);
+      console.error('Erro no processo de atualização:', error);
 
       if (error instanceof jwt.JsonWebTokenError) {
         return res
           .status(401)
-          .json({ error: true, message: 'Token invalido!' });
+          .json({ error: true, message: 'Token inválido!' });
       }
       if (error instanceof jwt.TokenExpiredError) {
         return res
@@ -280,7 +280,7 @@ module.exports = {
 
       return res.status(500).json({
         error: true,
-        message: 'Erro interno no servidor ao processar a atualizacao',
+        message: 'Erro interno no servidor ao processar a atualização',
       });
     }
   },
@@ -298,14 +298,14 @@ module.exports = {
     if (!token) {
       return res
         .status(401)
-        .json({ error: true, message: 'Token nao fornecido!' });
+        .json({ error: true, message: 'Token não fornecido!' });
     }
 
     const jwtSecret = process.env.TOKEN_JWT;
     if (!jwtSecret) {
       return res.status(500).json({
         error: true,
-        message: 'Erro de configuracao do servidor.',
+        message: 'Erro de configuração do servidor.',
       });
     }
 
@@ -319,14 +319,14 @@ module.exports = {
       if (!autorToApprov) {
         return res.status(404).json({
           erro: true,
-          mensagem: 'Nenhum autor encontrado para aprovacao!',
+          mensagem: 'Nenhum autor encontrado para aprovação!',
         });
       }
 
       if (!authenticatedAutor) {
         return res.status(404).json({
           erro: true,
-          mensagem: 'Autor autenticado nao encontrado!',
+          mensagem: 'Autor autenticado não encontrado!',
         });
       }
 
@@ -340,12 +340,12 @@ module.exports = {
       await Autor.approv(autorId);
       return res.status(200).json({ msg: 'Autor aprovado com sucesso!' });
     } catch (error) {
-      console.error('Erro no processo de aprovacao:', error);
+      console.error('Erro no processo de aprovação:', error);
 
       if (error instanceof jwt.JsonWebTokenError) {
         return res
           .status(401)
-          .json({ error: true, message: 'Token invalido!' });
+          .json({ error: true, message: 'Token inválido!' });
       }
       if (error instanceof jwt.TokenExpiredError) {
         return res
@@ -355,7 +355,7 @@ module.exports = {
 
       return res.status(500).json({
         error: true,
-        message: 'Erro interno no servidor ao processar a aprovacao',
+        message: 'Erro interno no servidor ao processar a aprovação',
       });
     }
   },
@@ -437,21 +437,21 @@ module.exports = {
       if (!user || user.length === 0) {
         return res.status(400).json({
           erro: true,
-          mensagem: 'Erro: Usuario ou senha incorreta!',
+          mensagem: 'Erro: Usuário ou senha incorreta!',
         });
       }
 
       if (user[0].aprovado == 0) {
         return res.status(400).json({
           erro: true,
-          mensagem: 'Erro: Esse usuario ainda nao foi aprovado.',
+          mensagem: 'Erro: Esse usuário ainda não foi aprovado.',
         });
       }
 
       if (!(await bcrypt.compare(password, user[0].password))) {
         return res.status(400).json({
           erro: true,
-          mensagem: 'Erro: Usuario ou senha incorreta!',
+          mensagem: 'Erro: Usuário ou senha incorreta!',
         });
       }
 
@@ -459,7 +459,7 @@ module.exports = {
       if (!jwtSecret) {
         return res.status(500).json({
           erro: true,
-          mensagem: 'Erro de configuracao do servidor.',
+          mensagem: 'Erro de configuração do servidor.',
         });
       }
 
@@ -489,7 +489,7 @@ module.exports = {
     if (!autorId) {
       return res
         .status(401)
-        .json({ erro: true, mensagem: 'Token nao fornecido!' });
+        .json({ erro: true, mensagem: 'Token não fornecido!' });
     }
 
     try {

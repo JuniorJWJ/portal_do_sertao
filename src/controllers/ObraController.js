@@ -22,14 +22,14 @@ module.exports = {
     if (!token) {
       return res
         .status(401)
-        .json({ error: true, message: 'Token nao fornecido!' });
+        .json({ error: true, message: 'Token não fornecido!' });
     }
 
     const jwtSecret = process.env.TOKEN_JWT;
     if (!jwtSecret) {
       return res.status(500).json({
         error: true,
-        message: 'Erro de configuracao do servidor.',
+        message: 'Erro de configuração do servidor.',
       });
     }
 
@@ -47,7 +47,7 @@ module.exports = {
     } catch (error) {
       return res.status(401).json({
         error: true,
-        message: 'Token invalido!',
+        message: 'Token inválido!',
       });
     }
   },
@@ -59,14 +59,14 @@ module.exports = {
     if (!token) {
       return res
         .status(401)
-        .json({ error: true, message: 'Token nao fornecido!' });
+        .json({ error: true, message: 'Token não fornecido!' });
     }
 
     const jwtSecret = process.env.TOKEN_JWT;
     if (!jwtSecret) {
       return res.status(500).json({
         error: true,
-        message: 'Erro de configuracao do servidor.',
+        message: 'Erro de configuração do servidor.',
       });
     }
 
@@ -88,7 +88,7 @@ module.exports = {
     } catch (error) {
       return res.status(401).json({
         error: true,
-        message: 'Token invalido!',
+        message: 'Token inválido!',
       });
     }
 
@@ -146,14 +146,14 @@ module.exports = {
     if (!token) {
       return res
         .status(401)
-        .json({ error: true, message: 'Token nao fornecido!' });
+        .json({ error: true, message: 'Token não fornecido!' });
     }
 
     const jwtSecret = process.env.TOKEN_JWT;
     if (!jwtSecret) {
       return res.status(500).json({
         error: true,
-        message: 'Erro de configuracao do servidor.',
+        message: 'Erro de configuração do servidor.',
       });
     }
 
@@ -166,14 +166,14 @@ module.exports = {
       if (!obraToDelete) {
         return res.status(404).json({
           erro: true,
-          mensagem: 'Obra nao encontrada!',
+          mensagem: 'Obra não encontrada!',
         });
       }
 
       if (!authenticatedAutor) {
         return res.status(404).json({
           erro: true,
-          mensagem: 'Autor autenticado nao encontrado!',
+          mensagem: 'Autor autenticado não encontrado!',
         });
       }
 
@@ -182,12 +182,12 @@ module.exports = {
         authenticatedAutor.adm === 1
       ) {
         await Obra.delete(obraId);
-        return res.status(200).json({ msg: 'Obra excluida com sucesso!' });
+        return res.status(200).json({ msg: 'Obra excluída com sucesso!' });
       }
 
       return res.status(403).json({
         error: true,
-        message: 'Voce nao tem permissao para excluir esta obra!',
+        message: 'Você não tem permissão para excluir esta obra!',
       });
     } catch (error) {
       console.error('Erro no processo de exclusao:', error);
@@ -195,7 +195,7 @@ module.exports = {
       if (error instanceof jwt.JsonWebTokenError) {
         return res
           .status(401)
-          .json({ error: true, message: 'Token invalido!' });
+          .json({ error: true, message: 'Token inválido!' });
       }
       if (error instanceof jwt.TokenExpiredError) {
         return res
@@ -223,14 +223,14 @@ module.exports = {
     if (!token) {
       return res
         .status(401)
-        .json({ error: true, message: 'Token nao fornecido!' });
+        .json({ error: true, message: 'Token não fornecido!' });
     }
 
     const jwtSecret = process.env.TOKEN_JWT;
     if (!jwtSecret) {
       return res.status(500).json({
         error: true,
-        message: 'Erro de configuracao do servidor.',
+        message: 'Erro de configuração do servidor.',
       });
     }
 
@@ -244,14 +244,14 @@ module.exports = {
       if (!obraToUpdate) {
         return res.status(404).json({
           erro: true,
-          mensagem: 'Obra a ser atualizada nao encontrada!',
+          mensagem: 'Obra a ser atualizada não encontrada!',
         });
       }
 
       if (!authenticatedAutor) {
         return res.status(404).json({
           erro: true,
-          mensagem: 'Autor autenticado nao encontrado!',
+          mensagem: 'Autor autenticado não encontrado!',
         });
       }
 
@@ -261,7 +261,7 @@ module.exports = {
       ) {
         return res.status(403).json({
           error: true,
-          message: 'Voce nao tem permissao para atualizar esta obra.',
+          message: 'Você não tem permissão para atualizar esta obra.',
         });
       }
 
@@ -300,12 +300,12 @@ module.exports = {
       await Obra.update(updatedObra, obraId);
       return res.status(200).json({ msg: 'Obra atualizada com sucesso!' });
     } catch (error) {
-      console.error('Erro no processo de atualizacao:', error);
+      console.error('Erro no processo de atualização:', error);
 
       if (error instanceof jwt.JsonWebTokenError) {
         return res
           .status(401)
-          .json({ error: true, message: 'Token invalido!' });
+          .json({ error: true, message: 'Token inválido!' });
       }
       if (error instanceof jwt.TokenExpiredError) {
         return res
@@ -315,7 +315,7 @@ module.exports = {
 
       return res.status(500).json({
         error: true,
-        message: 'Erro interno no servidor ao processar a atualizacao',
+        message: 'Erro interno no servidor ao processar a atualização',
       });
     }
   },
@@ -333,14 +333,14 @@ module.exports = {
     if (!token) {
       return res
         .status(401)
-        .json({ error: true, message: 'Token nao fornecido!' });
+        .json({ error: true, message: 'Token não fornecido!' });
     }
 
     const jwtSecret = process.env.TOKEN_JWT;
     if (!jwtSecret) {
       return res.status(500).json({
         error: true,
-        message: 'Erro de configuracao do servidor.',
+        message: 'Erro de configuração do servidor.',
       });
     }
 
@@ -353,7 +353,7 @@ module.exports = {
       if (!authenticatedAutor) {
         return res.status(404).json({
           erro: true,
-          mensagem: 'Autor autenticado nao encontrado!',
+          mensagem: 'Autor autenticado não encontrado!',
         });
       }
 
@@ -368,19 +368,19 @@ module.exports = {
       if (!obra) {
         return res.status(404).json({
           erro: true,
-          mensagem: 'Nenhuma obra encontrada para aprovacao!',
+          mensagem: 'Nenhuma obra encontrada para aprovação!',
         });
       }
 
       await Obra.approv(obraId);
       return res.status(200).json({ msg: 'Obra aprovada com sucesso!' });
     } catch (error) {
-      console.error('Erro no processo de aprovacao:', error);
+      console.error('Erro no processo de aprovação:', error);
 
       if (error instanceof jwt.JsonWebTokenError) {
         return res
           .status(401)
-          .json({ error: true, message: 'Token invalido!' });
+          .json({ error: true, message: 'Token inválido!' });
       }
       if (error instanceof jwt.TokenExpiredError) {
         return res
@@ -390,7 +390,7 @@ module.exports = {
 
       return res.status(500).json({
         error: true,
-        message: 'Erro interno no servidor ao processar a aprovacao',
+        message: 'Erro interno no servidor ao processar a aprovação',
       });
     }
   },
@@ -410,7 +410,7 @@ module.exports = {
       if (obra.length == 0) {
         return res.status(400).json({
           erro: true,
-          mensagem: 'Nenhum obra encontrada!',
+          mensagem: 'Nenhuma obra encontrada!',
         });
       }
 

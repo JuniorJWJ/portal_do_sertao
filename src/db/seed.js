@@ -10,51 +10,51 @@ const appApiUrl = (process.env.APP_API_URL || 'http://localhost:3000').replace(
 const uploadsDir = path.resolve(__dirname, '..', '..', 'tmp', 'uploads');
 
 const cidades = [
-  [1, 'Agua Fria'],
-  [2, 'Amelia Rodrigues'],
+  [1, '?gua Fria'],
+  [2, 'Am?lia Rodrigues'],
   [3, 'Anguera'],
-  [4, 'Antonio Cardoso'],
-  [5, 'Conceicao da Feira'],
-  [6, 'Conceicao do Jacuipe'],
-  [7, 'Coracao de Maria'],
+  [4, 'Ant?nio Cardoso'],
+  [5, 'Conceição da Feira'],
+  [6, 'Conceição do Jacuípe'],
+  [7, 'Coração de Maria'],
   [8, 'Feira de Santana'],
-  [9, 'Ipecaeta'],
-  [10, 'Irara'],
-  [11, 'Santa Barbara'],
-  [12, 'Santanopolis'],
-  [13, 'Santo Estevao'],
-  [14, 'Sao Goncalo dos Campos'],
+  [9, 'Ipecaet?'],
+  [10, 'Irar?'],
+  [11, 'Santa B?rbara'],
+  [12, 'Santan?polis'],
+  [13, 'Santo Estêvão'],
+  [14, 'São Gonçalo dos Campos'],
   [15, 'Tanquinho'],
   [16, 'Teodoro Sampaio'],
   [17, 'Terra Nova'],
 ];
 
 const generosLiterarios = [
-  [1, 'Ficcao Literaria'],
+  [1, 'Ficção Literária'],
   [2, 'Novela'],
   [3, 'Suspense'],
-  [4, 'Ficcao Cientifica'],
+  [4, 'Ficção Científica'],
   [5, 'Fantasia'],
   [6, 'Terror'],
   [7, 'Teatro'],
   [8, 'Romance'],
   [9, 'Infanto Juvenil'],
-  [10, 'Texto Litero Musical'],
+  [10, 'Texto L?tero Musical'],
   [11, 'Poema'],
   [12, 'Ensaio'],
-  [13, 'Cronica Argumentativa'],
+  [13, 'Cr?nica Argumentativa'],
   [14, 'Cordel'],
   [15, 'Contos'],
-  [16, 'Cronica Literaria'],
+  [16, 'Cr?nica Literária'],
 ];
 
 const autores = [
   {
     nome: 'Admin Portal',
     profissao: 'Administrador',
-    biografia: 'Conta administrativa para testar aprovacoes e cadastros.',
+    biografia: 'Conta administrativa para testar aprovações e cadastros.',
     email: 'admin@portal.local',
-    genero: 'Prefiro nao informar',
+    genero: 'Prefiro não informar',
     cor_de_pele: 'Parda',
     id_cidade: 8,
     adm: 1,
@@ -66,10 +66,10 @@ const autores = [
     },
   },
   {
-    nome: 'Maria do Sertao',
+    nome: 'Maria do Sertão',
     profissao: 'Poeta',
     biografia:
-      'Autora de poemas sobre memoria, feira livre e caminhos do interior.',
+      'Autora de poemas sobre mem?ria, feira livre e caminhos do interior.',
     email: 'maria@portal.local',
     genero: 'Feminino',
     cor_de_pele: 'Parda',
@@ -86,7 +86,7 @@ const autores = [
     nome: 'Joao Cordelista',
     profissao: 'Cordelista',
     biografia:
-      'Escritor popular dedicado a narrativas de humor, politica e cotidiano.',
+      'Escritor popular dedicado a narrativas de humor, pol?tica e cotidiano.',
     email: 'joao@portal.local',
     genero: 'Masculino',
     cor_de_pele: 'Preta',
@@ -103,7 +103,7 @@ const autores = [
     nome: 'Ana Feira',
     profissao: 'Professora',
     biografia:
-      'Pesquisadora de literatura regional e cronicas de cidade pequena.',
+      'Pesquisadora de literatura regional e cr?nicas de cidade pequena.',
     email: 'ana@portal.local',
     genero: 'Feminino',
     cor_de_pele: 'Branca',
@@ -117,7 +117,7 @@ const autores = [
     },
   },
   {
-    nome: 'Carlos de Irara',
+    nome: 'Carlos de Irar?',
     profissao: 'Compositor',
     biografia:
       'Autor de textos litero-musicais inspirados por cantigas e relatos orais.',
@@ -140,56 +140,56 @@ const obras = [
     nome: 'Caminhos de Feira',
     autorEmail: 'maria@portal.local',
     generoId: 11,
-    resumo: 'Poemas curtos sobre memoria, feira livre e deslocamentos.',
+    resumo: 'Poemas curtos sobre mem?ria, feira livre e deslocamentos.',
     enderecoVideo: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
   },
   {
     nome: 'A Feira Antes do Sol',
     autorEmail: 'maria@portal.local',
     generoId: 16,
-    resumo: 'Cronicas sobre trabalhadores que chegam antes da cidade acordar.',
+    resumo: 'Cr?nicas sobre trabalhadores que chegam antes da cidade acordar.',
     enderecoVideo: '',
   },
   {
     nome: 'O Romance do Licuri',
     autorEmail: 'joao@portal.local',
     generoId: 14,
-    resumo: 'Cordel bem-humorado sobre uma disputa por um pe de licuri.',
+    resumo: 'Cordel bem-humorado sobre uma disputa por um p? de licuri.',
     enderecoVideo: '',
   },
   {
-    nome: 'Sete Versos Para Irara',
+    nome: 'Sete Versos Para Irar?',
     autorEmail: 'joao@portal.local',
     generoId: 14,
-    resumo: 'Sete narrativas populares ambientadas nas ruas de Irara.',
+    resumo: 'Sete narrativas populares ambientadas nas ruas de Irar?.',
     enderecoVideo: '',
   },
   {
-    nome: 'Cronicas da Estrada',
+    nome: 'Cr?nicas da Estrada',
     autorEmail: 'ana@portal.local',
     generoId: 16,
     resumo: 'Relatos de viagens entre escolas, povoados e bibliotecas.',
     enderecoVideo: '',
   },
   {
-    nome: 'Noite em Santo Estevao',
+    nome: 'Noite em Santo Estêvão',
     autorEmail: 'ana@portal.local',
     generoId: 3,
-    resumo: 'Suspense regional sobre uma carta esquecida em uma rodoviaria.',
+    resumo: 'Suspense regional sobre uma carta esquecida em uma rodovi?ria.',
     enderecoVideo: '',
   },
   {
-    nome: 'Cantiga Para o Sertao',
+    nome: 'Cantiga Para o Sertão',
     autorEmail: 'carlos@portal.local',
     generoId: 10,
-    resumo: 'Texto litero-musical para voz, viola e coro comunitario.',
+    resumo: 'Texto litero-musical para voz, viola e coro comunitário.',
     enderecoVideo: '',
   },
   {
     nome: 'O Menino e a Sanfona',
     autorEmail: 'carlos@portal.local',
     generoId: 9,
-    resumo: 'Narrativa infanto juvenil sobre musica, familia e descoberta.',
+    resumo: 'Narrativa infanto juvenil sobre m?sica, fam?lia e descoberta.',
     enderecoVideo: '',
   },
 ];
@@ -235,13 +235,13 @@ function createAvatar(autor) {
 }
 
 function createGenericAvatar() {
-  const fileName = 'seed-autor-generico.svg';
+  const fileName = 'seed-autor-gen?rico.svg';
   const filePath = path.join(uploadsDir, fileName);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320" role="img" aria-label="Autor">
   <rect width="320" height="320" rx="42" fill="#4b5563"/>
   <circle cx="160" cy="122" r="54" fill="#f9fafb"/>
   <path d="M72 276c16-58 54-88 88-88s72 30 88 88" fill="#f9fafb"/>
-  <text x="160" y="300" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#f9fafb">Portal do Sertao</text>
+  <text x="160" y="300" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#f9fafb">Portal do Sertão</text>
 </svg>
 `;
 
@@ -265,7 +265,7 @@ function createPdf(obra, autor) {
 0 -28 Td
 (${resumo}) Tj
 0 -40 Td
-(Arquivo gerado pelo seed local do Portal do Sertao.) Tj
+(Arquivo gerado pelo seed local do Portal do Sertão.) Tj
 ET`;
   const objects = [
     '1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n',
@@ -298,9 +298,9 @@ function createGenericPdf() {
   return createPdf(
     {
       nome: 'Obra de Teste',
-      resumo: 'Arquivo generico para registros locais sem PDF valido.',
+      resumo: 'Arquivo gen?rico para registros locais sem PDF v?lido.',
     },
-    { nome: 'Portal do Sertao' },
+    { nome: 'Portal do Sertão' },
   );
 }
 
@@ -519,7 +519,7 @@ async function seed() {
 
     await client.query('COMMIT');
 
-    console.log('Seed concluido com sucesso.');
+    console.log('Seed conclu?do com sucesso.');
     console.log('Login admin: admin@portal.local / 123456');
     console.log('Login autor: maria@portal.local / 123456');
     console.log(`Arquivos locais gerados em: ${uploadsDir}`);
