@@ -33,4 +33,19 @@ server.use(express.json({ limit: '1mb' }));
 
 server.use(route);
 
-server.listen(3000, () => console.log('RODANDO'));
+const port = Number(process.env.PORT || 3000);
+
+const listener = server.listen(port, () => {
+  console.log(`Backend rodando em http://localhost:${port}`);
+});
+
+listener.on('error', (error) => {
+  if (error.code === 'EADDRINUSE') {
+    console.error(
+      `A porta ${port} ja esta em uso. Feche o processo antigo ou defina outra porta com PORT=3001.`,
+    );
+    process.exit(1);
+  }
+
+  throw error;
+});
